@@ -1,0 +1,53 @@
+/* Motion. Everything here is either a hover/focus response or a one-shot entrance that only exists in
+   the markup on the render where the page was entered (see theme.entering()). Reruns never replay it. */
+:root { --ease: cubic-bezier(.2, .7, .2, 1); }
+
+@keyframes sc-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes sc-slide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes sc-flash { from { background-color: rgba(var(--alarm-rgb), .42); } }
+
+.sc-in { animation: sc-rise .28s var(--ease) both; animation-delay: var(--d, 0ms); }
+
+/* hover and focus: 150-200 ms ease-out */
+.sc-kpi, .sc-card, [data-testid="stMetric"], [data-testid="stExpander"], .sc-tablewrap {
+  transition: border-color .18s var(--ease), background-color .18s var(--ease);
+}
+.sc-kpi:hover, .sc-card:hover, [data-testid="stMetric"]:hover { border-color: var(--line-hi); }
+.sc-kpi:hover::before { width: 26px; }
+.sc-kpi::before, [data-testid="stMetric"]::before { transition: width .2s var(--ease); }
+.stButton > button, .stFormSubmitButton > button {
+  transition: border-color .16s var(--ease), color .16s var(--ease), background-color .16s var(--ease),
+    transform .16s var(--ease);
+}
+.stButton > button:active, .stFormSubmitButton > button:active { transform: translateY(1px); }
+[data-testid="stSidebar"] [data-testid="stRadioOption"] {
+  transition: background-color .15s var(--ease), color .15s var(--ease), border-left-color .15s var(--ease);
+}
+.sc-table td { transition: background-color .15s var(--ease); }
+[data-baseweb="input"], [data-baseweb="textarea"] { transition: border-color .18s var(--ease); }
+
+/* live feed: rows that were not on screen at the previous refresh */
+.sc-table tr.sc-newrow > td { animation: sc-slide .42s var(--ease) both; }
+.sc-table tr.sc-newrow.sc-flash > td { animation: sc-slide .42s var(--ease) both, sc-flash 1.8s ease-out; }
+
+/* approvals: decision feedback, then the card collapses */
+[class*="st-key-appr_"] {
+  position: relative; max-height: 640px;
+  transition: opacity .3s var(--ease), transform .3s var(--ease), max-height .38s var(--ease);
+}
+[class*="st-key-appr_"].sc-decided .sc-card { border-color: var(--signal); }
+[class*="st-key-appr_"].sc-decided[data-state="Rejected"] .sc-card { border-color: var(--alarm); }
+[class*="st-key-appr_"].sc-decided::after {
+  content: attr(data-state); position: absolute; top: .95rem; right: 1.1rem;
+  font: 500 .75rem var(--mono); color: var(--signal-ink);
+}
+[class*="st-key-appr_"].sc-decided[data-state="Rejected"]::after { color: var(--alarm-ink); }
+[class*="st-key-appr_"].sc-leaving { opacity: 0; transform: translateX(14px); max-height: 0; overflow: hidden; pointer-events: none; }
+
+[class*="st-key-appr_"].sc-ghost { background: var(--void); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+[class*="st-key-appr_"].sc-ghost.sc-ghost-out { opacity: 0; transform: translateX(18px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-in, .sc-table tr.sc-newrow > td, .sc-table tr.sc-newrow.sc-flash > td { animation: none !important; }
+  [class*="st-key-appr_"] { transition: none !important; }
+}

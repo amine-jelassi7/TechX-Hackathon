@@ -1,0 +1,29 @@
+{
+  "id": "prod_ai_bootcamp",
+  "name": "AI Foundations Bootcamp",
+  "tagline": "Learn to build with AI in 4 weeks",
+  "description": "A 4-week live bootcamp that takes students and junior developers from AI basics to a working project: prompting, APIs, simple agents and deployment.",
+  "audience": ["students", "junior developers"],
+  "price": 250.0,
+  "currency": "TND",
+  "plans": [
+    {"id": "std", "name": "Standard", "price": 250.0},
+    {"id": "pro", "name": "Pro (mentoring)", "price": 450.0}
+  ],
+  "features": ["16 live sessions", "Hands-on projects", "Certificate of completion", "Recordings for 3 months"],
+  "faq_seed": [
+    "Is there a refund policy?",
+    "Do I need prior experience?",
+    "When do the sessions take place?",
+    "Do I get a certificate?",
+    "What is the difference between Standard and Pro?"
+  ],
+  "policies": {
+    "refund": "Refund within 7 days if fewer than 2 sessions attended.",
+    "schedule": "Sessions run Monday to Thursday, 18:00-20:00 Tunisia time, for 4 weeks.",
+    "prerequisites": "Basic Python knowledge is helpful; no prior AI experience is required.",
+    "certificate": "A certificate of completion is issued to students who attend at least 12 of 16 sessions."
+  },
+  "contact": "contact@example.test",
+  "tone": "friendly, concise, professional"
+}

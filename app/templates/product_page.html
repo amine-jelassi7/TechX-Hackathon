@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ product.name }}</title>
+<style>
+  :root { --ink:#1b2430; --muted:#5b6675; --brand:#0f766e; --bg:#f6f8fa; --card:#fff; --line:#dde3ea; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--ink); background:var(--bg); line-height:1.5; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+  .hero { background: var(--brand); color:#fff; padding: 40px 0; }
+  .hero h1 { margin:0 0 8px; font-size: 2rem; }
+  .hero p.tag { margin:0 0 12px; font-size: 1.15rem; opacity:.95; }
+  .hero .aud { font-size:.9rem; opacity:.85; }
+  section { margin: 28px 0; }
+  h2 { font-size:1.3rem; margin: 0 0 12px; }
+  ul.features { padding-left: 20px; margin:0; }
+  .plans { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
+  .plan { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .plan .name { font-weight:600; }
+  .plan .price { font-size:1.5rem; color:var(--brand); font-weight:700; }
+  dl.policies { margin:0; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; }
+  dl.policies dt { font-weight:600; text-transform:capitalize; }
+  dl.policies dd { margin:0 0 10px; color:var(--muted); }
+  footer { color:var(--muted); font-size:.9rem; padding: 8px 0 120px; }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>{{ product.name }}</h1>
+    <p class="tag">{{ product.tagline }}</p>
+    <div class="aud">For: {{ product.audience | join(", ") }}</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h2>About</h2>
+    <p>{{ product.description }}</p>
+    <p>From <strong>{{ "%.2f"|format(product.price) }} {{ product.currency }}</strong></p>
+  </section>
+
+  <section>
+    <h2>What is included</h2>
+    <ul class="features">
+      {% for f in product.features %}<li>{{ f }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Plans</h2>
+    <div class="plans">
+      {% for plan in product.plans %}
+      <div class="plan">
+        <div class="name">{{ plan.name }}</div>
+        <div class="price">{{ "%.2f"|format(plan.price) }} {{ product.currency }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section>
+    <h2>Policies</h2>
+    <dl class="policies">
+      {% for key, value in product.policies.items() %}
+      <dt>{{ key }}</dt><dd>{{ value }}</dd>
+      {% endfor %}
+    </dl>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>{{ product.contact }}</p>
+  </section>
+</main>
+
+<footer class="wrap">Prototype with simulated payments. No real money is charged.</footer>
+
+{% include "chat_widget.html" %}
+</body>
+</html>

@@ -1,0 +1,154 @@
+<style>
+  #sx-chat { position:fixed; right:12px; bottom:12px; width:360px; max-width:calc(100vw - 24px); background:#fff; border:1px solid #dde3ea; border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,.18); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:14px; color:#1b2430; z-index:1000; }
+  #sx-head { background:#0f766e; color:#fff; padding:10px 12px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  #sx-body { display:none; padding:10px; }
+  #sx-chat.open #sx-body { display:block; }
+  #sx-log { height:220px; overflow-y:auto; border:1px solid #eef1f4; border-radius:8px; padding:8px; background:#fafbfc; }
+  .sx-msg { margin:0 0 8px; padding:6px 10px; border-radius:10px; max-width:88%; white-space:pre-wrap; word-wrap:break-word; }
+  .sx-user { background:#d9f2ee; margin-left:auto; }
+  .sx-bot { background:#eef1f4; }
+  #sx-row { display:flex; gap:6px; margin-top:8px; }
+  #sx-input { flex:1; min-width:0; padding:8px; border:1px solid #c9d1da; border-radius:8px; font-size:14px; }
+  #sx-chat button { padding:8px 10px; border:0; border-radius:8px; background:#0f766e; color:#fff; font-size:13px; cursor:pointer; }
+  #sx-chat button.alt { background:#e6ebf0; color:#1b2430; }
+  #sx-chat button:disabled { opacity:.5; cursor:default; }
+  .sx-sec { margin-top:10px; padding-top:8px; border-top:1px solid #eef1f4; }
+  .sx-sec label { display:block; font-weight:600; margin-bottom:4px; }
+  .sx-btns { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  #sx-plan { width:100%; padding:7px; border:1px solid #c9d1da; border-radius:8px; }
+  #sx-payres { margin-top:6px; font-size:13px; }
+  #sx-stars button { background:#e6ebf0; color:#1b2430; padding:6px 10px; margin-right:4px; }
+  #sx-rateres { margin-left:4px; font-size:13px; }
+</style>
+
+<div id="sx-chat">
+  <div id="sx-head"><span>Ask us anything</span><span id="sx-toggle">+</span></div>
+  <div id="sx-body">
+    <div id="sx-log" aria-live="polite"></div>
+    <div id="sx-row">
+      <input id="sx-input" type="text" maxlength="1000" placeholder="Type your question" autocomplete="off">
+      <button id="sx-mic" class="alt" type="button" style="display:none" title="Speak">Mic</button>
+      <button id="sx-send" type="button">Send</button>
+    </div>
+
+    <div class="sx-sec">
+      <label for="sx-plan">Plan (test payment, no real money)</label>
+      <select id="sx-plan">
+        {% for plan in product.plans %}
+        <option value="{{ plan.id }}">{{ plan.name }} - {{ "%.2f"|format(plan.price) }} {{ product.currency }}</option>
+        {% endfor %}
+      </select>
+      <div class="sx-btns">
+        <button type="button" class="sx-pay" data-token="tok_success">Pay (test success)</button>
+        <button type="button" class="sx-pay" data-token="tok_declined">Pay (test declined)</button>
+        <button type="button" class="sx-pay" data-token="tok_pending">Pay (test pending)</button>
+      </div>
+      <div id="sx-payres"></div>
+    </div>
+
+    <div class="sx-sec">
+      <label>Rate this chat</label>
+      <span id="sx-stars">
+        <button type="button" data-score="1">1</button><button type="button" data-score="2">2</button><button type="button" data-score="3">3</button><button type="button" data-score="4">4</button><button type="button" data-score="5">5</button>
+      </span>
+      <span id="sx-rateres"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function newId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "s" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+  var sessionId;
+  try {
+    sessionId = sessionStorage.getItem("sx_session_id");
+    if (!sessionId) { sessionId = newId(); sessionStorage.setItem("sx_session_id", sessionId); }
+  } catch (e) { sessionId = newId(); }
+
+  var box = document.getElementById("sx-chat");
+  var log = document.getElementById("sx-log");
+  var input = document.getElementById("sx-input");
+  var sendBtn = document.getElementById("sx-send");
+
+  document.getElementById("sx-head").addEventListener("click", function () {
+    var open = box.classList.toggle("open");
+    document.getElementById("sx-toggle").textContent = open ? "-" : "+";
+  });
+
+  function addMsg(text, who) {
+    var d = document.createElement("div");
+    d.className = "sx-msg " + (who === "user" ? "sx-user" : "sx-bot");
+    d.textContent = text;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function postJson(url, body) {
+    return fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (data) {
+        data.__ok = r.ok;
+        return data;
+      });
+    });
+  }
+
+  function send() {
+    var text = input.value.trim();
+    if (!text) return;
+    addMsg(text, "user");
+    input.value = "";
+    sendBtn.disabled = true;
+    postJson("/api/chat", { session_id: sessionId, message: text })
+      .then(function (d) { addMsg(typeof d.reply === "string" ? d.reply : "Sorry, something went wrong.", "bot"); })
+      .catch(function () { addMsg("Network error, please retry.", "bot"); })
+      .then(function () { sendBtn.disabled = false; input.focus(); });
+  }
+  sendBtn.addEventListener("click", send);
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); send(); } });
+
+  var payRes = document.getElementById("sx-payres");
+  Array.prototype.forEach.call(document.querySelectorAll(".sx-pay"), function (b) {
+    b.addEventListener("click", function () {
+      payRes.textContent = "Processing...";
+      postJson("/api/pay", {
+        session_id: sessionId,
+        plan_id: document.getElementById("sx-plan").value,
+        test_token: b.getAttribute("data-token")
+      }).then(function (d) {
+        var s = d.status !== undefined ? String(d.status) : "error";
+        var m = d.message !== undefined ? String(d.message) : (d.detail ? "Request rejected." : "");
+        payRes.textContent = "Status: " + s + (m ? " - " + m : "");
+      }).catch(function () { payRes.textContent = "Network error, please retry."; });
+    });
+  });
+
+  var rateRes = document.getElementById("sx-rateres");
+  Array.prototype.forEach.call(document.querySelectorAll("#sx-stars button"), function (b) {
+    b.addEventListener("click", function () {
+      postJson("/api/rating", { session_id: sessionId, score: parseInt(b.getAttribute("data-score"), 10) })
+        .then(function (d) { rateRes.textContent = d.__ok ? "Thanks!" : "Could not save rating."; })
+        .catch(function () { rateRes.textContent = "Network error."; });
+    });
+  });
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR) {
+    var mic = document.getElementById("sx-mic");
+    mic.style.display = "";
+    mic.addEventListener("click", function () {
+      var rec = new SR();
+      rec.lang = document.documentElement.lang || "en-US";
+      rec.interimResults = false;
+      rec.onresult = function (ev) { input.value = ev.results[0][0].transcript; input.focus(); };
+      try { rec.start(); } catch (e) {}
+    });
+  }
+})();
+</script>

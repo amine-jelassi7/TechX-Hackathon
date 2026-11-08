@@ -1,0 +1,86 @@
+/* page head */
+.sc-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem;
+  padding-bottom: 0.9rem; margin-bottom: 1.1rem; border-bottom: 1px solid var(--line); }
+.sc-head h1 { margin: 0; line-height: 1.1; }
+.sc-head .sc-sub { color: var(--dim); font-size: 0.85rem; margin-top: 0.3rem; max-width: 62ch; }
+.sc-head .sc-right { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+
+/* section label with trailing rule */
+.sc-sec { display: flex; align-items: center; gap: 0.8rem; color: var(--dim); font-size: 0.82rem;
+  font-weight: 500; margin: 1.7rem 0 0.8rem; }
+.sc-sec::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* pills */
+.sc-pill { display: inline-flex; align-items: center; gap: 0.45rem; font: 500 0.72rem var(--mono);
+  padding: 0.18rem 0.6rem; border: 1px solid var(--line-hi); border-radius: 999px; color: var(--dim);
+  white-space: nowrap; }
+.sc-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.sc-pill.ok { color: var(--signal-ink); border-color: rgba(var(--signal-rgb),.45); }
+.sc-pill.bad { color: var(--alarm-ink); border-color: rgba(var(--alarm-rgb),.55); }
+.sc-pill.plain::before { display: none; }
+
+/* KPI card */
+.sc-kpi { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 2px;
+  padding: 0.85rem 1rem 0.8rem; height: 126px; display: flex; flex-direction: column; }
+.sc-kpi::before { content: ""; position: absolute; left: -1px; top: -1px; width: 14px; height: 2px; background: var(--signal); }
+.sc-kpi.alert::before { background: var(--alarm); width: 28px; }
+.sc-kpi .lb { color: var(--dim); font-size: 0.78rem; font-weight: 500; }
+.sc-kpi .vl { font: 500 1.95rem/1.15 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  margin-top: 0.25rem; color: var(--text); }
+.sc-kpi .vl small { font-size: 0.8rem; color: var(--dim); margin-left: 0.3rem; letter-spacing: 0; }
+.sc-kpi.alert .vl { color: var(--alarm-ink); }
+.sc-kpi .sb { color: var(--dim); font: 400 0.7rem var(--mono); margin-top: auto; padding-top: 0.45rem; }
+.sc-kpi .spark { position: absolute; right: 1rem; top: 2.1rem; display: flex; align-items: flex-end;
+  gap: 2px; height: 30px; }
+.sc-kpi .spark i { display: block; width: 3px; background: var(--signal); opacity: .75; min-height: 1px; }
+.sc-kpi.alert .spark i { background: var(--alarm); }
+.sc-kpi .spark i.z { background: var(--line-hi); opacity: 1; }
+.sc-meter { height: 3px; background: var(--line); margin-top: 0.5rem; position: relative; }
+.sc-meter > b { position: absolute; left: 0; top: 0; bottom: 0; background: var(--signal); }
+.sc-pips { display: flex; gap: 3px; margin-top: 0.55rem; }
+.sc-pips i { flex: 1; height: 3px; background: var(--line-hi); }
+.sc-pips i.on { background: var(--signal); }
+
+/* st.metric (evals page) */
+[data-testid="stMetric"] { background: var(--panel); border: 1px solid var(--line); border-radius: 2px;
+  padding: 0.85rem 1rem; position: relative; }
+[data-testid="stMetric"]::before { content: ""; position: absolute; left: -1px; top: -1px; width: 14px; height: 2px; background: var(--signal); }
+[data-testid="stMetricLabel"] p { color: var(--dim); font-size: 0.78rem; font-weight: 500; }
+[data-testid="stMetricValue"] { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500;
+  font-size: 1.95rem; letter-spacing: -0.02em; }
+
+/* generic card */
+.sc-card { background: var(--panel); border: 1px solid var(--line); border-radius: 2px; padding: 0.9rem 1.1rem; margin-bottom: 0.6rem; }
+.sc-card.flag { border-left: 2px solid var(--alarm); }
+.sc-card .t { font-weight: 600; font-size: 0.95rem; }
+.sc-card .m { color: var(--dim); font: 400 0.74rem var(--mono); margin-top: 0.2rem; }
+.sc-card .b { margin-top: 0.55rem; font-size: 0.88rem; line-height: 1.5; max-width: 90ch; }
+.sc-kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.4rem 1.4rem; margin-top: 0.7rem; }
+.sc-kv div { font: 400 0.72rem var(--mono); color: var(--dim); }
+.sc-kv b { display: block; font: 500 0.9rem var(--mono); color: var(--text); font-variant-numeric: tabular-nums; }
+.sc-chip { display: inline-block; font: 500 0.7rem var(--mono); border: 1px solid var(--line-hi); color: var(--dim);
+  padding: 0.1rem 0.45rem; border-radius: 2px; margin-right: 0.35rem; }
+.sc-chip.hi { color: var(--signal-ink); border-color: rgba(var(--signal-rgb),.45); }
+
+/* tables */
+.sc-tablewrap { border: 1px solid var(--line); border-radius: 2px; background: var(--panel); max-height: 620px; overflow: auto; }
+.sc-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.sc-table th { position: sticky; top: 0; background: var(--panel); text-align: left; color: var(--dim); font-weight: 500;
+  padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--line-hi); white-space: nowrap; }
+.sc-table td { padding: 0.42rem 0.8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.sc-table td.m { font-family: var(--mono); font-size: 0.74rem; color: var(--dim); white-space: nowrap; }
+.sc-table td.r { color: var(--dim); max-width: 46ch; }
+.sc-table tr:hover td { background: var(--panel-hi); }
+.sc-table tr.flag td:first-child { box-shadow: inset 2px 0 0 var(--alarm); }
+.sc-table tr.flag td { background: rgba(var(--alarm-rgb),.06); }
+.dec-block, .dec-escalate { color: var(--alarm-ink); font-family: var(--mono); font-weight: 500; }
+.dec-allow, .dec-approve, .dec-ok { color: var(--signal-ink); font-family: var(--mono); }
+
+/* sidebar brand + status */
+.sc-brand { padding: 0.9rem 0.9rem 1rem; border-bottom: 1px solid var(--line); margin-bottom: 0.6rem; }
+.sc-brand b { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; }
+.sc-brand b span { color: var(--signal-ink); }
+.sc-brand div { color: var(--dim); font-size: 0.75rem; margin-top: 0.15rem; }
+.sc-side-foot { padding: 1rem 0.9rem; border-top: 1px solid var(--line); margin-top: 1.4rem; color: var(--dim);
+  font: 400 0.72rem var(--mono); line-height: 1.7; word-break: break-all; }
+.sc-brand b { color: var(--text); }

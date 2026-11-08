@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  --sans: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+
+/* chrome we do not want */
+#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDeployButton"],
+[data-testid="stDecoration"], [data-testid="stStatusWidget"] { display: none !important; visibility: hidden; }
+header[data-testid="stHeader"] { background: transparent; height: 2.2rem; }
+
+html, body, .stApp, [class*="st-"] { font-family: var(--sans); }
+[data-testid="stIconMaterial"], .material-icons, [class*="material-symbols"] {
+  font-family: "Material Symbols Rounded", "Material Icons" !important;
+}
+.stApp { background: var(--void); color: var(--text); }
+.block-container { padding: 1.6rem 2.2rem 4rem; max-width: 1560px; }
+::selection { background: var(--signal); color: var(--on-signal); }
+* { scrollbar-width: thin; scrollbar-color: var(--line-hi) transparent; }
+
+h1, h2, h3, h4 { font-family: var(--sans); letter-spacing: -0.01em; color: var(--text); }
+h1 { font-size: 1.55rem; font-weight: 600; padding: 0; }
+h2 { font-size: 1.05rem; font-weight: 600; padding: 1.4rem 0 0.5rem; }
+h3 { font-size: 0.95rem; font-weight: 600; padding: 1.2rem 0 0.4rem; color: var(--text); }
+p, li, label, span { font-weight: 400; }
+[data-testid="stCaptionContainer"], .stCaption { color: var(--dim); font-size: 0.8rem; }
+code, pre, kbd { font-family: var(--mono) !important; }
+hr { border-color: var(--line); margin: 1.4rem 0; }
+a { color: var(--signal-ink); }
+
+/* sidebar */
+[data-testid="stSidebar"] { background: var(--panel); border-right: 1px solid var(--line); }
+[data-testid="stSidebar"] > div:first-child { padding-top: 0.6rem; }
+[data-testid="stSidebar"] [data-testid="stRadio"] > label { display: none; }
+[data-testid="stSidebar"] [role="radiogroup"] { gap: 0; }
+[data-testid="stSidebar"] [data-testid="stRadioOption"] {
+  padding: 0.5rem 0.9rem; margin: 0; border-left: 2px solid transparent;
+  color: var(--dim); width: 100%; border-radius: 0; cursor: pointer;
+}
+[data-testid="stSidebar"] [data-testid="stRadioOption"] > div > div:first-child { display: none; }
+[data-testid="stSidebar"] [data-testid="stRadioOption"] p { font-size: 0.92rem; color: inherit; }
+[data-testid="stSidebar"] [data-testid="stRadioOption"]:hover { background: var(--panel-hi); color: var(--text); }
+[data-testid="stSidebar"] [data-testid="stRadioOption"][data-selected="true"] {
+  border-left-color: var(--signal); background: var(--panel-hi); color: var(--text);
+}
+[data-testid="stSidebar"] [data-testid="stRadioOption"][data-selected="true"] p { font-weight: 500; }
+
+/* buttons */
+.stButton > button, .stFormSubmitButton > button, .stDownloadButton > button {
+  background: transparent; color: var(--text); border: 1px solid var(--line-hi);
+  border-radius: 2px; font-weight: 500; font-size: 0.85rem; padding: 0.35rem 0.9rem;
+  transition: border-color .12s, color .12s;
+}
+.stButton > button:hover, .stFormSubmitButton > button:hover { border-color: var(--signal); color: var(--signal-ink); background: transparent; }
+.stButton > button:focus-visible, .stFormSubmitButton > button:focus-visible { outline: 1px solid var(--signal); outline-offset: 2px; }
+.stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {
+  background: var(--signal); color: var(--on-signal); border-color: var(--signal);
+}
+.st-key-danger button:hover, button.sc-danger:hover { border-color: var(--alarm); color: var(--alarm-ink); }
+
+/* inputs */
+[data-baseweb="input"], [data-baseweb="textarea"], [data-baseweb="select"] > div {
+  background: var(--panel-hi) !important; border-color: var(--line) !important; border-radius: 2px !important;
+}
+[data-baseweb="input"]:focus-within, [data-baseweb="textarea"]:focus-within { border-color: var(--signal) !important; }
+input, textarea { font-family: var(--sans) !important; color: var(--text) !important; }
+[data-testid="stWidgetLabel"] p { color: var(--dim); font-size: 0.8rem; }
+
+/* expanders, forms, alerts, containers */
+[data-testid="stExpander"] { border: 1px solid var(--line); border-radius: 2px; background: var(--panel); }
+[data-testid="stExpander"] summary { padding: 0.55rem 0.9rem; }
+[data-testid="stExpander"] summary:hover { background: var(--panel-hi); }
+[data-testid="stForm"] { border: 1px solid var(--line); border-radius: 2px; background: transparent; }
+[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 2px; }
+[data-testid="stAlert"] {
+  background: var(--panel); border: 1px solid var(--line); border-left: 2px solid var(--signal);
+  border-radius: 2px; color: var(--text);
+}
+[data-testid="stAlert"]:has([data-testid="stAlertContentError"]) { border-left-color: var(--alarm); }
+[data-testid="stAlert"]:has([data-testid="stAlertContentWarning"]) { border-left-color: var(--alarm); }
+[data-testid="stAlert"] svg { color: var(--dim); }
+[data-testid="stAlert"]:has([data-testid="stAlertContentError"]) svg { color: var(--alarm-ink); }
+[data-testid="stJson"], [data-testid="stCode"] { border: 1px solid var(--line); border-radius: 2px; background: var(--panel) !important; }
+[data-testid="stCode"] pre { background: var(--panel) !important; font-size: 0.82rem; }
+[data-testid="stPlotlyChart"] { background: transparent; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* theme-following overrides for Streamlit's own (dark-based) widgets, needed for the light mode */
+[data-testid="stMarkdownContainer"], [data-testid="stHtml"], [data-testid="stSidebar"] { color: var(--text); }
+[data-testid="stSidebarCollapseButton"] span, [data-testid="stExpandSidebarButton"] span { color: var(--dim) !important; }
+label:has(input[role="switch"]) > div:first-of-type { background: var(--line-hi); transition: background-color .18s ease-out; }
+label[data-selected="true"]:has(input[role="switch"]) > div:first-of-type { background: var(--signal); }
+label:has(input[role="switch"]) > div:first-of-type > div { background: #FFFFFF; }
+[data-baseweb="popover"] [data-baseweb="menu"], [data-baseweb="popover"] ul { background: var(--panel-hi) !important; color: var(--text); }
+[data-baseweb="popover"] li:hover { background: var(--line) !important; }
+[data-baseweb="select"] span, [data-baseweb="select"] div { color: var(--text); }
+[data-testid="stJson"] { color-scheme: inherit; }
+.stButton button, .stFormSubmitButton button { background-color: var(--panel); color: var(--text); border: 1px solid var(--line-hi); border-radius: 2px; }
+.stButton button:hover, .stFormSubmitButton button:hover { background-color: var(--panel-hi); border-color: var(--signal); color: var(--signal-ink); }
+.stButton button[kind="primary"], .stFormSubmitButton button[kind="primary"] { background-color: var(--signal); color: var(--on-signal); }
+[data-baseweb="select"] div { background-color: var(--panel-hi) !important; }
+/* Streamlit 1.67 inputs are react-aria groups, not baseweb */
+[data-testid="stSelectbox"] [role="group"], [data-testid="stTextInput"] [role="group"], [data-testid="stTextArea"] [role="group"],
+[data-testid="stTextArea"] textarea, [data-testid="stTextInput"] input {
+  background-color: var(--panel-hi) !important; border-color: var(--line) !important; color: var(--text) !important;
+  border-radius: 2px;
+}
+[data-testid="stSelectbox"] [role="group"] *, [data-testid="stSelectbox"] input { color: var(--text) !important; }
+[role="listbox"], [role="listbox"] [role="option"] { background-color: var(--panel-hi) !important; color: var(--text) !important; }
+[role="listbox"] [role="option"][data-focused="true"], [role="listbox"] [role="option"]:hover { background-color: var(--line) !important; }
+[data-testid="stExpander"] details, [data-testid="stExpander"] summary { border-color: var(--line) !important; background: transparent; }
+[data-testid="stForm"] { border-color: var(--line) !important; }
+[data-testid="stExpander"] * { border-color: var(--line); }
+[data-testid="stTextInput"] input, [data-testid="stTextArea"] textarea { border-color: var(--line) !important; }
+[role="listbox"] { border: 1px solid var(--line-hi) !important; }
