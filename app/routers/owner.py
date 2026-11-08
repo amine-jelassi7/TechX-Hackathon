@@ -8,7 +8,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from sqlmodel import Session, select
 
 from app import audit
@@ -33,7 +33,7 @@ from app.models import (
 )
 from app.permissions import is_allowed
 from app.schemas import Ctx, Plan, Policies, Product
-from app.services import analytics, improvements, insights, qa, simulator
+from app.services import analytics, improvements, insights, prospect_scraper, qa, simulator
 from app.services import feedback as feedback_service
 from app.services.pdf_parser import PDFParseError, parse_pdf
 
@@ -745,6 +745,12 @@ class QAUpdate(BaseModel):
     variants: list[str] = []
 
 
+class ProspectDiscoveryRequest(BaseModel):
+    product_id: str = Field(min_length=1, max_length=64)
+    location: str = Field(default="", max_length=100)
+    limit: int = Field(default=15, ge=1, le=15)
+
+
 def _qa(e: QAEntry) -> dict:
     return {
         "id": e.id,
@@ -930,6 +936,46 @@ def draft_mark_sent(draft_id: str, session: Db) -> dict:
 
 
 # ---- simulator ---------------------------------------------------------------------------------
+@router.post("/prospects/discover")
+def prospect_discover(body: ProspectDiscoveryRequest, session: Db) -> dict:
+    product = session.get(SaaSProduct, body.product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="product not found")
+    try:
+        result = prospect_scraper.discover_buyers(
+            product.product_json,
+            hunter_api_key=settings.hunter_api_key,
+            tavily_api_key=settings.tavily_api_key,
+            location=body.location,
+            limit=body.limit,
+        )
+    except prospect_scraper.ResearchError as exc:
+        audit.log_event(
+            session,
+            trace_id=None,
+            actor="owner",
+            event_type="buyer_research",
+            decision="block",
+            reasons=["research_unavailable"],
+            payload={"product_id": product.id, "reason": str(exc)[:160]},
+        )
+        status_code = 422 if "API_KEY" in str(exc) else 502
+        raise HTTPException(status_code=status_code, detail=str(exc)) from exc
+    audit.log_event(
+        session,
+        trace_id=None,
+        actor="owner",
+        event_type="buyer_research",
+        decision="allow",
+        payload={
+            "product_id": product.id,
+            "candidate_count": result["count"],
+            "providers": (["Hunter", "Tavily"] if settings.hunter_api_key else ["Tavily", "public contact-page fallback"]),
+        },
+    )
+    return result
+
+
 @router.post("/simulate")
 def simulate(session: Db, scenario: str = Query("demo", pattern="^(demo|attack)$")) -> dict:
     return simulator.run_demo(session) if scenario == "demo" else simulator.run_attacks(session)

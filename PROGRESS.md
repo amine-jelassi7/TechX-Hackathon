@@ -50,10 +50,12 @@ uv run python tasks.py dashboard  # Streamlit owner console
 | W | Wiring: `app/agents/insights.py`, owner endpoints insights/run, recommendations, drafts, mark_sent (drafts deduped per lead), `/owner/simulate` (demo + attack, `app/services/simulator.py`), `python tasks.py demo`, dashboard actor mapping vs real backend actors | done | see PR list |
 | D | Public product fit finder: `data/products.json` catalog, `app/services/recommender.py` (deterministic 6-signal scoring), `GET /discover` + `POST /api/recommend`, dashboard-styled `discover.html`, product page CTA | done | - |
 | F | Final: end-to-end browser check (product page chat + pay, discover quiz, dashboard on real backend), review pass, PITCH numbers | next | - |
+| B1 | Owner buyer research: product-profile queries, recent news evidence, contact enrichment with robots-aware page fallback, ranked review UI | in progress | - |
 
 ## 4. Next actions (in order)
 1. F (final checks): browser check of product page + `/discover` + dashboard on the real backend (`uv run python tasks.py demo`, then `run` and `dashboard`), review pass, PITCH numbers.
 2. Optional: held-out Q&A question set (current 100% is optimistic, see docs/SECURITY.md).
+3. B1 buyer research: Tavily is required; Hunter contact enrichment is optional because the run falls back to public company contact pages. Validate results against source pages before outreach.
 
 ## Dev tips
 - Dashboard without backend: `uv run uvicorn tests.fixtures.mock_owner_api:app --port 8001`, then

@@ -51,3 +51,12 @@
   PDF support uses pure-Python `pypdf` for text extraction and `python-multipart` for FastAPI uploads;
   neither executes PDF content or adds OCR. The dashboard stores separate draft and published product
   snapshots so owner edits and approved suggestions remain private until the owner publishes again.
+- **Buyer research is owner-triggered and evidence-first.** Search queries are built from the selected
+  product profile. Hunter discovers candidate companies and enriches business-domain decision-maker
+  emails first; Tavily searches one-year news results for funding, acquisition and hiring signals. A
+  signal is included only when a dated result names the candidate and its public page is crawlable under
+  that page's `robots.txt`. If enrichment finds no contact, only the company's `/contact`, `/about` and
+  `/team` pages are checked. Personal webmail domains and LinkedIn are excluded; phone numbers are taken
+  only from `/contact` pages and labeled as the company main line. Results without recent signal evidence
+  are omitted. No messages are sent. Search and enrichment keys are supplied through `.env`, and the
+  dashboard warns that providers may consume credits before a run.

@@ -22,6 +22,8 @@ class Settings(BaseModel):
     db_url: str = "sqlite:///./data/app.db"
     owner_token: str = "change-me"
     app_env: str = "dev"
+    tavily_api_key: str = ""
+    hunter_api_key: str = ""
 
     # Payments / fraud (spec 7.3)
     payment_approval_threshold: float = 300.0
@@ -73,6 +75,8 @@ def load_settings() -> Settings:
         db_url=_f("DB_URL", "sqlite:///./data/app.db").strip(),
         owner_token=_f("OWNER_TOKEN", "change-me"),
         app_env=_f("APP_ENV", "dev"),
+        tavily_api_key=_f("TAVILY_API_KEY", "").strip(),
+        hunter_api_key=_f("HUNTER_API_KEY", "").strip(),
         payment_approval_threshold=float(_f("PAYMENT_APPROVAL_THRESHOLD", "300")),
     )
 

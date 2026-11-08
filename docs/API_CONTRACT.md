@@ -50,6 +50,7 @@ All responses JSON. Timestamps ISO 8601.
 | `POST /owner/drafts/{id}/mark_sent` | the draft |
 | `GET /owner/evals` | contents of `data/eval_results.json`, or `{}` |
 | `POST /owner/simulate?scenario=demo` or `attack` | `{"steps": [{"step": str, "result": dict}]}` |
+| `POST /owner/prospects/discover` body `{product_id, location?, limit?}` | `{queries, target_count, count, companies: [{company_name, website, why_likely_buyer, likelihood_score, signals, contacts, contact_page_url, phone}]}`. Uses product-profile search, recent sourced activity, business-domain decision-maker contacts, and contact-page fallback; never sends messages. |
 
 ## 3. Public HTTP API
 

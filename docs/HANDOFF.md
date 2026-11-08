@@ -44,7 +44,7 @@ No `make` on Windows: `tasks.py` does everything. Keep `LLM_MODE=mock` when ther
 | Security | Layered gateway (filters EN/FR/AR, base64, zero-width, Luhn; LLM classifier only when unsure), least-privilege matrix, fraud rules, hash-chained audit log | `app/gateway/`, `app/permissions.py`, `app/audit.py` |
 | API | Public: product page, chat, pay, rating. Owner (token): KPIs, audit, approvals, Q&A, insights, drafts, simulate, evals | `app/routers/` |
 | Product page | Jinja page + chat widget, test pay buttons, no card field anywhere, mic via Web Speech API | `app/templates/` |
-| Dashboard | 7 pages, three.js agent network, HUD theme, light/dark toggle, motion, live feed every 5 s | `dashboard/` (`DESIGN.md` explains the design) |
+| Dashboard | Owner console with buyer discovery, three.js agent network, HUD theme, light/dark toggle, motion, live feed every 5 s | `dashboard/` (`DESIGN.md` explains the design) |
 | Evals | 23 Q&A questions + 15 attacks, honest results written to `docs/SECURITY.md` | `scripts/run_evals.py`, `tests/evals/` |
 | Docs | Architecture diagrams, security model and limits, decisions, pitch guide | `docs/` |
 

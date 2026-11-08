@@ -17,6 +17,7 @@ from dashboard import (
     page_insights,
     page_overview,
     page_products,
+    page_prospects,
     page_qa,
     page_security,
     theme,
@@ -25,6 +26,7 @@ from dashboard.common import quiet
 
 PAGES = {
     "Products": page_products.render,
+    "Buyer discovery": page_prospects.render,
     "Inbox": page_feedback.render_inbox,
     "Suggestions": page_feedback.render_suggestions,
     "Overview": page_overview.render,
