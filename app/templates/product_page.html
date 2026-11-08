@@ -254,6 +254,10 @@
   dl.policies dt { font: 500 .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin-top: .8rem; }
   dl.policies dd { margin: 0 0 .8rem; color: var(--dim); }
   dl.policies dd:last-child { margin-bottom: 0; }
+  #feedbackForm { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem; }
+  #feedbackForm label { display: grid; gap: .35rem; color: var(--dim); font-size: .85rem; }
+  #feedbackForm select, #feedbackForm textarea { width: 100%; padding: .6rem; color: var(--text); background: var(--panel-hi); border: 1px solid var(--line-hi); }
+  #feedbackForm textarea { min-height: 5rem; }
 
   footer {
     position: relative;
@@ -286,7 +290,6 @@
     <a class="brand" href="/">Souk<span>SaaS</span></a>
     <div class="meta">
       <span class="pill ok">deterministic scoring</span>
-      <a class="pill" href="/discover" style="text-decoration:none">find your fit</a>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme">Light</button>
     </div>
   </div>
@@ -309,14 +312,6 @@
   </section>
 
   <section class="wrap">
-    <div class="panel fitcall">
-      <div>
-        <b>Not sure this is the right fit?</b>
-        <span>Answer six quick questions and get a product recommendation.</span>
-      </div>
-      <a class="btn primary" href="/discover">Find your fit</a>
-    </div>
-
     <div class="panel">
       <div class="label">About</div>
       <p>{{ product.description }}</p>
@@ -329,6 +324,14 @@
         {% for f in product.features %}<li>{{ f }}</li>{% endfor %}
       </ul>
     </div>
+
+    {% if product.use_cases or product.differentiators %}
+    <div class="panel">
+      <div class="label">Use cases and differentiators</div>
+      <ul class="features">{% for item in product.use_cases|default([], true) %}<li>{{ item }}</li>{% endfor %}
+      {% for item in product.differentiators|default([], true) %}<li>{{ item }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
 
     <div class="panel">
       <div class="label">Plans</div>
@@ -351,10 +354,46 @@
       </dl>
     </div>
 
+    {% if product.integrations or product.tech_notes %}
+    <div class="panel"><div class="label">Integrations and security</div>
+      <ul class="features">{% for item in product.integrations|default([], true) %}<li>{{ item }}</li>{% endfor %}</ul>
+      <p>{{ product.tech_notes|default('', true) }}</p>
+    </div>
+    {% endif %}
+
+    {% if faq %}
+    <div class="panel"><div class="label">Frequently asked questions</div>
+      {% for entry in faq %}<details><summary>{{ entry.question }}</summary><p>{{ entry.answer }}</p></details>{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if product_slug and (product.support_channels or product.sla) %}
+    <div class="panel"><div class="label">Support</div>
+      <p>{{ product.support_channels|join(', ') }}</p><p>{{ product.sla }}</p>
+    </div>
+    {% endif %}
+
     <div class="panel">
       <div class="label">Contact</div>
       <p>{{ product.contact }}</p>
     </div>
+
+    {% if product_slug %}
+    <div class="panel" id="rate-service">
+      <div class="label">Rate this service</div>
+      <p>Share feedback about your experience. No personal information is required.</p>
+      <form id="feedbackForm">
+        <input type="hidden" name="session_id" id="feedbackSession">
+        {% for key, labels in [('ease',['Ease of use','Was navigation clear?']),('feature_fit',['Feature fit','Were key features sufficient?']),('value',['Value for price','Did the outcome justify the cost?']),('reliability',['Reliability','Were there interruptions?']),('support',['Support quality','Was the response useful?']),('satisfaction',['Overall satisfaction','Did it meet expectations?'])] %}
+        {% for label in labels %}<label>{{ label }} <select name="{{ key }}{% if loop.index == 2 %}_2{% endif %}"><option value="">Skip</option>{% for v in range(1,6) %}<option value="{{ v }}">{{ v }}</option>{% endfor %}</select></label>{% endfor %}
+        {% endfor %}
+        <label>Likelihood to recommend <select name="recommend"><option value="">Skip</option>{% for v in range(0,11) %}<option value="{{ v }}">{{ v }}</option>{% endfor %}</select></label>
+        <label>Your review <textarea name="review" maxlength="2000"></textarea></label>
+        <button class="btn primary" type="submit">Submit feedback</button>
+        <span id="feedbackResult" role="status"></span>
+      </form>
+    </div>
+    {% endif %}
   </section>
 </main>
 
@@ -389,6 +428,27 @@
   }
 
   themeInit();
+
+  var feedbackForm = document.getElementById("feedbackForm");
+  if (feedbackForm) {
+    var sid;
+    try { sid = sessionStorage.getItem("sx_session_id"); } catch (e) {}
+    if (!sid) {
+      sid = "s_" + Math.random().toString(36).slice(2, 14);
+      try { sessionStorage.setItem("sx_session_id", sid); } catch (e) {}
+    }
+    document.getElementById("feedbackSession").value = sid;
+    feedbackForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      var data = Object.fromEntries(new FormData(feedbackForm).entries());
+      feedbackForm.querySelectorAll("select").forEach(function (el) { if (el.value === "") delete data[el.name]; });
+      try {
+        var response = await fetch("/api/feedback/{{ product_slug }}", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data)});
+        var result = await response.json();
+        document.getElementById("feedbackResult").textContent = response.ok ? "Thank you. Your score is " + result.score + "/100." : (result.detail || "Could not submit feedback.");
+      } catch (e) { document.getElementById("feedbackResult").textContent = "Could not submit feedback."; }
+    });
+  }
 })();
 </script>
 

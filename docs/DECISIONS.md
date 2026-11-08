@@ -37,3 +37,17 @@
 - **Conversion KPI** is `converted_prospects / interested_prospects` where converted = paid AND interested;
   `paid_prospects` still counts every payer. An owner-approved payment ends `succeeded` (the `approved` status
   belongs to the ApprovalRequest, never to a Payment).
+- **SaaS owner flow plan (2026-11-08).** The existing discovery quiz is customer-facing and is replaced
+  by a redirect to published pages (or a minimal published-product list). The requested flow needs a
+  persisted multi-product catalog, owner-token APIs, dashboard wizard, deterministic public page,
+  feedback scoring, and evidence-backed suggestions. Implementation order: data/contracts and parser;
+  owner CRUD/publish and public routing; feedback and aggregates; suggestions/inbox/page changes;
+  dashboard and docs. Product rows retain structured Product fields as JSON to preserve the existing
+  Sales/Payment contract. Existing one-product seed remains the default published product. PDF intake
+  uses text extraction only, never stores the upload, and leaves every extracted value for owner review.
+  Delivery is dashboard inbox plus a local Markdown outbox; no email is sent. Scanned PDFs/OCR are out
+  of scope. `app/db.py` adds `product_id` to existing SQLite interaction, payment, Q&A and approval tables
+  before `create_all` creates the new product-flow tables.
+  PDF support uses pure-Python `pypdf` for text extraction and `python-multipart` for FastAPI uploads;
+  neither executes PDF content or adds OCR. The dashboard stores separate draft and published product
+  snapshots so owner edits and approved suggestions remain private until the owner publishes again.

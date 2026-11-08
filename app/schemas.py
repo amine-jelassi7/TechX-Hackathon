@@ -1,4 +1,5 @@
 """Pydantic schemas: product, agent messages, gateway decisions, insights, KPIs."""
+
 import uuid
 from datetime import UTC, datetime
 from typing import Annotated, Any, Literal
@@ -15,6 +16,9 @@ class Plan(BaseModel):
     id: str
     name: str
     price: float
+    currency: str | None = None
+    billing_period: str | None = None
+    included_features: list[str] = Field(default_factory=list)
 
 
 class Policies(BaseModel):
@@ -39,6 +43,15 @@ class Product(BaseModel):
     policies: Policies
     contact: str
     tone: str
+    website: str = ""
+    logo_url: str = ""
+    use_cases: list[str] = Field(default_factory=list)
+    differentiators: list[str] = Field(default_factory=list)
+    integrations: list[str] = Field(default_factory=list)
+    tech_notes: str = ""
+    trial_policy: str = ""
+    support_channels: list[str] = Field(default_factory=list)
+    sla: str = ""
 
 
 # ---- Product discovery (public fit quiz) ----
@@ -129,6 +142,7 @@ class ChatRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     session_id: Annotated[str, Field(pattern=SESSION_ID_PATTERN), AfterValidator(_no_card_number)]
     message: str
+    product_id: str | None = Field(default="prod_ai_bootcamp", max_length=64)
 
 
 class PayRequest(BaseModel):
@@ -136,6 +150,7 @@ class PayRequest(BaseModel):
     session_id: Annotated[str, Field(pattern=SESSION_ID_PATTERN), AfterValidator(_no_card_number)]
     plan_id: str
     test_token: str = Field(pattern=TEST_TOKEN_PATTERN)  # sandbox tokens only, never a card number
+    product_id: str | None = Field(default="prod_ai_bootcamp", max_length=64)
 
 
 class RatingRequest(BaseModel):
@@ -170,6 +185,28 @@ class InsightsAnalysis(BaseModel):
     needs: list[Need] = Field(default_factory=list)
     objections: list[Objection] = Field(default_factory=list)
     recommendations: list[RecommendationItem] = Field(default_factory=list)
+
+
+class ProductSuggestionEvidence(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    dimension_scores: dict[str, float]
+    theme_counts: dict[str, int]
+    response_ids: list[str] = Field(min_length=1)
+
+
+class ProductImprovementSuggestion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    id: str
+    type: Literal["page_copy", "faq_add", "pricing", "onboarding", "support", "feature"]
+    title: str = Field(min_length=1, max_length=160)
+    rationale: str = Field(min_length=1, max_length=1000)
+    target_section: str = Field(min_length=1, max_length=80)
+    before: str = Field(default="", max_length=1000)
+    after: str = Field(default="", max_length=1000)
+    priority: Literal["low", "medium", "high"]
+    impact: Literal["low", "medium", "high"]
+    effort: Literal["low", "medium", "high"]
+    evidence: ProductSuggestionEvidence
 
 
 class LeadOpportunity(BaseModel):

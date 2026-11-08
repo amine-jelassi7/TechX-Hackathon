@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "sections": [
+    {"id": "identity", "fields": ["name", "tagline", "website", "logo_url"], "en": "Identity", "fr": "Identité"},
+    {"id": "problem_solution", "fields": ["description", "audience", "use_cases"], "en": "Problem and solution", "fr": "Problème et solution"},
+    {"id": "product", "fields": ["features", "differentiators", "integrations", "tech_notes"], "en": "Product", "fr": "Produit"},
+    {"id": "commercial", "fields": ["plans", "trial_policy", "policies.refund"], "en": "Commercial", "fr": "Offre commerciale"},
+    {"id": "support", "fields": ["support_channels", "sla", "contact"], "en": "Support and contact", "fr": "Support et contact"},
+    {"id": "brand", "fields": ["tone"], "en": "Brand", "fr": "Marque"}
+  ],
+  "questions": {
+    "name": {"en": "What is your SaaS called?", "fr": "Comment s'appelle votre SaaS ?"},
+    "tagline": {"en": "Describe it in one short line.", "fr": "Décrivez-le en une phrase courte."},
+    "website": {"en": "What is the website or demo link?", "fr": "Quel est le lien du site ou de la démo ?"},
+    "logo_url": {"en": "What is the logo URL?", "fr": "Quel est le lien du logo ?"},
+    "description": {"en": "What problem does it solve?", "fr": "Quel problème résout-il ?"},
+    "audience": {"en": "Who is the ideal customer?", "fr": "Quel est le client idéal ?"},
+    "use_cases": {"en": "What are the key use cases?", "fr": "Quels sont les principaux cas d'usage ?"},
+    "features": {"en": "What are the main features?", "fr": "Quelles sont les fonctionnalités principales ?"},
+    "differentiators": {"en": "What makes it different?", "fr": "Qu'est-ce qui le différencie ?"},
+    "integrations": {"en": "Which integrations are available?", "fr": "Quelles intégrations sont disponibles ?"},
+    "tech_notes": {"en": "What security or compliance notes can be shared?", "fr": "Quelles informations de sécurité ou conformité partager ?"},
+    "plans": {"en": "What pricing plans are offered?", "fr": "Quels forfaits tarifaires proposez-vous ?"},
+    "trial_policy": {"en": "Is there a trial or refund policy?", "fr": "Proposez-vous un essai ou une politique de remboursement ?"},
+    "support_channels": {"en": "How can customers get support?", "fr": "Comment les clients peuvent-ils obtenir de l'aide ?"},
+    "sla": {"en": "What response time can you commit to?", "fr": "Quel délai de réponse pouvez-vous garantir ?"},
+    "contact": {"en": "What is the contact email?", "fr": "Quelle est l'adresse e-mail de contact ?"},
+    "tone": {"en": "What tone should the page use?", "fr": "Quel ton doit utiliser la page ?"}
+  }
+}

@@ -13,15 +13,29 @@ ALL_TOOLS: tuple[str, ...] = (
     "lead.read_consented",
     "draft.write",
     "recommendation.write",
+    "pdf.parse",
+    "feedback.write",
+    "product.publish",
+    "notification.write",
 )
 
 PERMISSIONS: dict[str, frozenset[str]] = {
     "sales": frozenset({"qa.search", "product.read", "interaction.write", "message.send.payment"}),
     "payment": frozenset({"product.read", "payment.create", "payment.read", "approval.create"}),
-    "insights": frozenset({
-        "interaction.read_anonymized", "kpi.read", "lead.read_consented", "draft.write", "recommendation.write",
-    }),
+    "insights": frozenset(
+        {
+            "interaction.read_anonymized",
+            "kpi.read",
+            "lead.read_consented",
+            "draft.write",
+            "recommendation.write",
+            "notification.write",
+        }
+    ),
     "analytics": frozenset({"kpi.read"}),
+    "intake": frozenset({"pdf.parse"}),
+    "feedback": frozenset({"feedback.write"}),
+    "owner": frozenset({"product.publish"}),
 }
 
 

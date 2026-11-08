@@ -131,7 +131,7 @@ def test_simulate_attack_decisions(client, owner):
     assert res.status_code == 200
     steps = res.json()["steps"]
     detail = [s["result"] for s in steps[:-1]]
-    assert len(detail) == 13 and all("got" in d and "expected" in d for d in detail)
+    assert len(detail) == 14 and all("got" in d and "expected" in d for d in detail)
     assert all(d["ok"] for d in detail), [d for d in detail if not d["ok"]]
     assert next(d for d in detail if d["id"] == "atk_08")["layer"] == "schema_422"
     assert steps[-1]["result"]["audit_chain"]["ok"] is True

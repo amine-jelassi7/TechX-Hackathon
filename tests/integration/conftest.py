@@ -7,6 +7,7 @@ from app import llm
 from app.config import settings
 from app.db import get_session
 from app.main import create_app
+from app.models import SaaSProduct
 from app.services import qa
 
 OWNER = {"X-Owner-Token": "test-token"}
@@ -18,10 +19,22 @@ def engine(monkeypatch):
     monkeypatch.setattr(settings, "embedding_mode", "tfidf")
     monkeypatch.setattr(settings, "owner_token", "test-token")
     monkeypatch.setattr(settings, "payment_approval_threshold", 300.0)
-    eng = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+    eng = create_engine(
+        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+    )
     SQLModel.metadata.create_all(eng)
     qa.invalidate()
     with Session(eng) as s:
+        demo = llm.load_product()
+        s.add(
+            SaaSProduct(
+                id=demo.id,
+                slug="ai-foundations-bootcamp",
+                status="published",
+                product_json=demo.model_dump(),
+                published_json=demo.model_dump(),
+            )
+        )
         for d in qa.generate_qa(llm.load_product()):
             d.status = "approved"
             s.add(d)

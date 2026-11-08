@@ -1,9 +1,10 @@
 """SQLModel tables (shared contract for all phases)."""
+
 import uuid
 from datetime import UTC, datetime
 
 from pydantic import NaiveDatetime
-from sqlalchemy import JSON, Column
+from sqlalchemy import JSON, Column, UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -11,7 +12,7 @@ def new_id() -> str:
     """Random id. Underscores every 8 hex chars keep digit runs under 13, so an id can never look like
     a card number to the gateway's Luhn filter (plain uuid hex did, ~0.2% of the time)."""
     h = uuid.uuid4().hex
-    return "_".join(h[i:i + 8] for i in range(0, 32, 8))
+    return "_".join(h[i : i + 8] for i in range(0, 32, 8))
 
 
 def utcnow() -> datetime:
@@ -27,6 +28,7 @@ class Prospect(SQLModel, table=True):
 
 class Interaction(SQLModel, table=True):
     id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(default="prod_ai_bootcamp", index=True)
     session_id: str = Field(index=True)
     prospect_id: str | None = Field(default=None, index=True)
     role: str  # prospect | agent
@@ -41,6 +43,7 @@ class Interaction(SQLModel, table=True):
 
 class QAEntry(SQLModel, table=True):
     id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(default="prod_ai_bootcamp", index=True)
     question: str
     variants: list[str] = Field(default_factory=list, sa_column=Column(JSON))
     answer: str
@@ -50,6 +53,7 @@ class QAEntry(SQLModel, table=True):
 
 class Payment(SQLModel, table=True):
     id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(default="prod_ai_bootcamp", index=True)
     prospect_id: str = Field(index=True)
     plan_id: str
     amount: float
@@ -65,6 +69,7 @@ class Payment(SQLModel, table=True):
 
 class ApprovalRequest(SQLModel, table=True):
     id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(default="prod_ai_bootcamp", index=True)
     kind: str  # payment | escalation | draft
     ref_id: str | None = None  # payment id etc.
     reasons: list[str] = Field(default_factory=list, sa_column=Column(JSON))
@@ -113,7 +118,9 @@ class AuditEvent(SQLModel, table=True):
     decision: str | None = None
     reasons_json: list[str] = Field(default_factory=list, sa_column=Column(JSON))
     seq: int = Field(default=0, index=True, unique=True)  # deterministic chain order (app/audit.py)
-    payload: dict = Field(default_factory=dict, sa_column=Column(JSON))  # redacted; part of the hash
+    payload: dict = Field(
+        default_factory=dict, sa_column=Column(JSON)
+    )  # redacted; part of the hash
     payload_hash: str = ""
     prev_hash: str = ""
     hash: str = ""
@@ -126,3 +133,76 @@ class SecurityAlert(SQLModel, table=True):
     alert_type: str  # injection | card_data | permission_denied | fraud | ...
     severity: str = "medium"  # low | medium | high
     detail: str = ""
+
+
+class SaaSProduct(SQLModel, table=True):
+    """Owner-managed product; the JSON payload preserves the existing Product contract."""
+
+    id: str = Field(default_factory=new_id, primary_key=True)
+    slug: str = Field(index=True, unique=True)
+    owner: str = "owner"
+    status: str = "draft"  # draft | published | archived
+    product_json: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    published_json: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    source: str = "manual"  # manual | pdf | mixed
+    confidence: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    needs_review: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    created_at: NaiveDatetime = Field(default_factory=utcnow)
+    updated_at: NaiveDatetime = Field(default_factory=utcnow)
+    published_at: NaiveDatetime | None = None
+
+
+class FeedbackResponse(SQLModel, table=True):
+    __table_args__ = (
+        UniqueConstraint("product_id", "session_id", name="uq_feedback_product_session"),
+    )
+    id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(index=True)
+    session_id: str = Field(index=True)
+    ip_hash: str = Field(default="", index=True)
+    answers: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    score: float
+    dimensions: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    nps_category: str = "passive"
+    review_redacted: str = ""
+    themes: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    verified_interaction: bool = False
+    created_at: NaiveDatetime = Field(default_factory=utcnow)
+
+
+class ProductNotification(SQLModel, table=True):
+    id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(index=True)
+    kind: str
+    title: str
+    body: str = ""
+    report_path: str = ""
+    created_at: NaiveDatetime = Field(default_factory=utcnow)
+
+
+class ProductSuggestion(SQLModel, table=True):
+    id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(index=True)
+    kind: str
+    title: str
+    rationale: str
+    target_section: str
+    before: str = ""
+    after: str = ""
+    priority: str = "medium"
+    impact: str = "medium"
+    effort: str = "medium"
+    evidence: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    status: str = "open"  # open | accepted | dismissed | done
+    created_at: NaiveDatetime = Field(default_factory=utcnow)
+
+
+class PendingPageChange(SQLModel, table=True):
+    id: str = Field(default_factory=new_id, primary_key=True)
+    product_id: str = Field(index=True)
+    suggestion_id: str = Field(index=True)
+    target_section: str
+    before: str = ""
+    after: str = ""
+    status: str = "pending"  # pending | approved | rejected
+    created_at: NaiveDatetime = Field(default_factory=utcnow)

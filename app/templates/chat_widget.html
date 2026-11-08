@@ -105,7 +105,7 @@
     addMsg(text, "user");
     input.value = "";
     sendBtn.disabled = true;
-    postJson("/api/chat", { session_id: sessionId, message: text })
+    postJson("/api/chat", { session_id: sessionId, message: text, product_id: "{{ product.id }}" })
       .then(function (d) { addMsg(typeof d.reply === "string" ? d.reply : "Sorry, something went wrong.", "bot"); })
       .catch(function () { addMsg("Network error, please retry.", "bot"); })
       .then(function () { sendBtn.disabled = false; input.focus(); });
@@ -119,6 +119,7 @@
       payRes.textContent = "Processing...";
       postJson("/api/pay", {
         session_id: sessionId,
+        product_id: "{{ product.id }}",
         plan_id: document.getElementById("sx-plan").value,
         test_token: b.getAttribute("data-token")
       }).then(function (d) {

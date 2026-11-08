@@ -17,8 +17,10 @@ Built for the TechX ENIT x ENICarthage 14h hackathon, "The Autonomous FinTech Te
 | 4. Financial Data Analyst | `app/services/analytics.py` | Deterministic KPIs (plain code), optional LLM narrative, revenue forecast (linear trend, bonus) |
 | 6. Security and Fraud Detection | `app/gateway/` | Layered gateway, permission matrix, explainable fraud rules, hash-chained audit log |
 
-Also: Streamlit owner console (7 pages), product page and chat widget, a deterministic product fit finder
-(`/discover`), and an attack evaluation set.
+Also: a Streamlit owner console for managing multiple SaaS products, a PDF-assisted intake flow,
+published product pages at `/p/{slug}`, customer feedback scoring, an owner inbox, and evidence-backed
+suggestions. The previous `/discover` fit finder now redirects to the only published product or lists
+published products.
 
 ## Quickstart
 
@@ -40,8 +42,8 @@ uv run python tasks.py eval        # attack evals (writes data/eval_results.json
 uv run python tasks.py demo        # reseed + scripted demo (spec section 13) in-process, prints a transcript
 ```
 
-- Product page: http://127.0.0.1:8000/
-- Product fit finder: http://127.0.0.1:8000/discover
+- Demo product page: http://127.0.0.1:8000/p/ai-foundations-bootcamp
+- Published products: http://127.0.0.1:8000/discover
 - API docs: http://127.0.0.1:8000/docs
 - Dashboard: http://localhost:8501
 
@@ -55,6 +57,15 @@ uv run python tasks.py demo        # reseed + scripted demo (spec section 13) in
 6. KPIs update; the Insights agent produces evidence-backed recommendations.
 7. Insights mode B ranks consented leads and writes outreach drafts; the owner copies one to send manually.
 8. The Security page shows audit-chain integrity OK and the eval results.
+
+## SaaS owner flow
+
+1. Open **Products** in the dashboard and create a draft. Optionally upload a text-based PDF (5 MB / 30 pages maximum); extracted values remain suggestions until you review and confirm them.
+2. Complete the required fields, preview the draft with the owner token, and explicitly publish it. Customers visit `/p/{slug}`.
+3. Customers can chat, use simulated test-token checkout, and submit the feedback form. Numeric scoring is deterministic and free-text reviews pass the security gateway before storage.
+4. After five responses, the dashboard shows aggregate scores and evidence-backed suggestions. Reports are downloadable Markdown files; no email is sent. Accepted page changes remain in the draft until you approve and publish them.
+
+The parser uses `pypdf` for text extraction and does not support scanned PDFs or OCR. Uploads are not retained.
 
 ## Security summary
 

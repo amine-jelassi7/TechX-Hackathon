@@ -6,13 +6,16 @@ SoukSaaS is a small team of cooperating agents behind a layered security gateway
 
 ```mermaid
 flowchart TD
-    Owner([Owner]) -->|defines| PJ[data/product.json]
-    PJ --> Page[Product page + chat widget<br/>Jinja2 + vanilla JS]
+    Owner([Owner]) -->|dashboard intake + optional PDF| API[Owner API]
+    API --> Parser[Text-only PDF parser]
+    API --> PJ[(Product drafts and published snapshots)]
+    PJ --> Page[Generated page + chat + feedback<br/>Jinja2 + vanilla JS]
     PJ --> QAGen[Q&A generation: draft]
     QAGen -->|owner validates| QA[(Approved Q&A base)]
 
     Prospect([Prospect]) --> Page
     Page -->|/api/chat, /api/pay, /api/rating| GWI{{Security Gateway<br/>check_input}}
+    Page -->|/api/feedback/{slug}| FB[Feedback handler and deterministic scoring]
     GWI --> ORCH[Orchestrator<br/>envelopes, permissions, timeout, retries]
 
     ORCH --> Sales[Sales Agent<br/>Q&A first, LLM fallback]
@@ -30,9 +33,12 @@ flowchart TD
     GWO --> DB[(SQLite shared state)]
     GWO --> AUD[(Hash-chained audit log)]
     DB --> AN[Analytics service<br/>deterministic KPIs, no LLM]
+    FB --> DB
+    DB --> IS[Evidence-backed product suggestions]
+    IS --> OUT[Owner inbox + Markdown outbox]
     AUD --> API
     AN --> API[FastAPI owner API<br/>X-Owner-Token]
-    API --> Dash[Streamlit dashboard<br/>KPIs, approvals, audit, evals]
+    API --> Dash[Streamlit dashboard<br/>Products, Inbox, Suggestions, KPIs, approvals, audit, evals]
     Dash --> Owner
 ```
 

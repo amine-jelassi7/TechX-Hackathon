@@ -12,19 +12,16 @@ ANSWERS = {
 }
 
 
-def test_discover_page_renders(client):
-    res = client.get("/discover")
-    assert res.status_code == 200
-    body = res.text
-    assert "Find the product" in body
-    assert "/api/recommend" in body
-    assert "Guided discovery" in body
+def test_old_find_fit_route_redirects_to_single_published_product(client):
+    res = client.get("/discover", follow_redirects=False)
+    assert res.status_code == 302
+    assert res.headers["location"] == "/p/ai-foundations-bootcamp"
 
 
-def test_product_page_links_to_discovery(client):
+def test_product_page_no_longer_links_to_find_fit(client):
     body = client.get("/").text
-    assert 'href="/discover"' in body
-    assert "Find your fit" in body
+    assert 'href="/discover"' not in body
+    assert "Find your fit" not in body
 
 
 def test_recommend_returns_ranked_results(client):
@@ -38,8 +35,21 @@ def test_recommend_returns_ranked_results(client):
     assert results[0]["fit"] == 100
     assert results[0]["band"] == "Strong fit"
     assert [r["fit"] for r in results] == sorted([r["fit"] for r in results], reverse=True)
-    required = {"id", "name", "tagline", "description", "audience", "price", "currency",
-                "plans", "features", "contact", "fit", "band", "reasons"}
+    required = {
+        "id",
+        "name",
+        "tagline",
+        "description",
+        "audience",
+        "price",
+        "currency",
+        "plans",
+        "features",
+        "contact",
+        "fit",
+        "band",
+        "reasons",
+    }
     assert required <= set(results[0])
 
 

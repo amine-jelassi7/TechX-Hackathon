@@ -56,11 +56,19 @@ All responses JSON. Timestamps ISO 8601.
 | Method + path | Body | Response |
 |---|---|---|
 | `GET /` | | product page HTML |
-| `GET /discover` | | product fit quiz page HTML (catalog from `data/products.json`) |
-| `POST /api/recommend` | `FitQuizAnswers` (six literal fields; extra fields -> 422) | `{trace_id, results: [{id, name, tagline, description, audience, price, currency, plans, features, contact, fit, band, reasons}]}` |
+| `GET /discover` | | redirects to the only published page, otherwise lists published products |
+| `GET /p/{slug}` | | published product page HTML |
 | `POST /api/chat` | `ChatRequest` (`session_id` matches `^[A-Za-z0-9_-]{1,64}$`, else 422) | `{reply, source, interest_level, blocked: bool, trace_id}` |
 | `POST /api/pay` | `PayRequest` (extra fields -> 422; `test_token` matches `^tok_[a-z0-9_]{1,32}$`, `session_id` as above) | `{status, message, payment_id, trace_id}` |
 | `POST /api/rating` | `RatingRequest` | `{ok: true}` |
+| `GET /api/feedback/questions` | | versioned FR/EN feedback question bank |
+| `POST /api/feedback/{slug}` | strict feedback answers | score, NPS category and response id |
+
+Product owner API (all paths require `X-Owner-Token`; product data is structured `Product` JSON):
+`GET/POST /owner/products`, `GET/PUT /owner/products/{id}`, `POST /owner/products/{id}/pdf`,
+`GET /owner/products/{id}/preview`, `POST /owner/products/{id}/confirm`, `POST .../publish`, `POST .../unpublish|archive`, `GET /owner/products/{id}/feedback`,
+`GET /owner/products/{id}/notifications`, `GET /owner/products/{id}/suggestions`, and owner actions under
+`/owner/suggestions/{id}/{accept|dismiss|done}` plus `/owner/page-changes/{id}/approve`.
 
 ## 4. Template rendering
 `GET /` renders `product_page.html` with `product=Product.model_dump()` (a dict; `policies` must be iterable with `.items()`).

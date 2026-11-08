@@ -15,11 +15,16 @@ def check_startup() -> None:
     """Log configuration problems once at startup (never the secrets themselves)."""
     if owner_token_is_default(settings):
         if owner_api_enabled(settings):
-            log.warning("OWNER_TOKEN is empty or the default 'change-me' (APP_ENV=dev): fine for a local demo, "
-                        "set OWNER_TOKEN before showing this to anyone.")
+            log.warning(
+                "OWNER_TOKEN is empty or the default 'change-me' (APP_ENV=dev): fine for a local demo, "
+                "set OWNER_TOKEN before showing this to anyone."
+            )
         else:
-            log.error("OWNER_TOKEN is empty or the default 'change-me' and APP_ENV=%s: the owner API is "
-                      "DISABLED (401 for every call). Set OWNER_TOKEN.", settings.app_env)
+            log.error(
+                "OWNER_TOKEN is empty or the default 'change-me' and APP_ENV=%s: the owner API is "
+                "DISABLED (401 for every call). Set OWNER_TOKEN.",
+                settings.app_env,
+            )
     llm.check_live_config()
 
 
@@ -32,6 +37,18 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     application = FastAPI(title="SoukSaaS", lifespan=lifespan)
+
+    @application.middleware("http")
+    async def security_headers(request, call_next):
+        response = await call_next(request)
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("Referrer-Policy", "no-referrer")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault(
+            "Content-Security-Policy",
+            "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'",
+        )
+        return response
 
     @application.get("/health")
     def health() -> dict[str, str]:

@@ -1,4 +1,5 @@
 """Base class for agents: identity, tool allow-list, and the gateway-gated tool helper."""
+
 import copy
 from typing import Any, ClassVar
 
@@ -20,13 +21,21 @@ class ToolRefused(Exception):
 class BaseAgent:
     name: str = "agent"
     # Returned (as payload) by the orchestrator if handle() times out or raises on every attempt.
-    fallback_payload: ClassVar[dict[str, Any]] = {"reply": "Sorry, something went wrong. Please retry."}
+    fallback_payload: ClassVar[dict[str, Any]] = {
+        "reply": "Sorry, something went wrong. Please retry."
+    }
     # Message types whose handler can safely run twice (no rows written, no money moved). The orchestrator
     # retries ONLY these; everything else runs exactly once, even after a timeout.
     idempotent_types: ClassVar[frozenset[str]] = frozenset()
 
-    def __init__(self, name: str, allowed_tools: frozenset[str] | set[str] | tuple[str, ...],
-                 session: Session, gateway: SecurityGateway | None = None, orchestrator: Any = None):
+    def __init__(
+        self,
+        name: str,
+        allowed_tools: frozenset[str] | set[str] | tuple[str, ...],
+        session: Session,
+        gateway: SecurityGateway | None = None,
+        orchestrator: Any = None,
+    ):
         self.name = name
         self.allowed_tools = frozenset(allowed_tools)
         self.session = session
@@ -37,7 +46,7 @@ class BaseAgent:
         """A copy of this agent working on `session` (one DB session per attempt, never shared across threads)."""
         clone = copy.copy(self)
         clone.session = session
-        clone.gateway = SecurityGateway(session)
+        clone.gateway = SecurityGateway(session, self.gateway.product)
         return clone
 
     def ctx(self, msg: AgentMessage, **extra: Any) -> Ctx:
@@ -47,11 +56,20 @@ class BaseAgent:
     def handle(self, msg: AgentMessage) -> AgentMessage | dict:
         raise NotImplementedError
 
-    def reply(self, msg: AgentMessage, type_: str, payload: dict, recipient: str | None = None) -> AgentMessage:
-        return AgentMessage(trace_id=msg.trace_id, sender=self.name, recipient=recipient or msg.sender,
-                            type=type_, payload=payload)
+    def reply(
+        self, msg: AgentMessage, type_: str, payload: dict, recipient: str | None = None
+    ) -> AgentMessage:
+        return AgentMessage(
+            trace_id=msg.trace_id,
+            sender=self.name,
+            recipient=recipient or msg.sender,
+            type=type_,
+            payload=payload,
+        )
 
-    def use_tool(self, tool: str, args: dict, ctx: Ctx, *, allow_escalate: bool = False) -> Decision:
+    def use_tool(
+        self, tool: str, args: dict, ctx: Ctx, *, allow_escalate: bool = False
+    ) -> Decision:
         """Run a tool call through the gateway. Raises ToolRefused unless the decision is allow
         (or escalate when the caller can handle it, e.g. the payment agent holding a payment)."""
         if ctx.actor != self.name:
@@ -59,7 +77,9 @@ class BaseAgent:
         if tool not in self.allowed_tools:
             # Still routed through the gateway so the denial is audited and alerted.
             decision = self.gateway.check_tool_call(tool, args, ctx)
-            if decision.action == "allow":  # matrix says yes but the agent never declared it: refuse
+            if (
+                decision.action == "allow"
+            ):  # matrix says yes but the agent never declared it: refuse
                 decision = Decision(action="block", reasons=[f"undeclared_tool:{tool}"], risk=1.0)
             raise ToolRefused(tool, decision)
         decision = self.gateway.check_tool_call(tool, args, ctx)

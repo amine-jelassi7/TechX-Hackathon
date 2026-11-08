@@ -1,4 +1,5 @@
 """Q&A generation, owner moderation and semantic matching over approved entries."""
+
 import re
 import threading
 import unicodedata
@@ -21,9 +22,111 @@ EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 
 
 _STOP = frozenset(
-    ["a", "an", "the", "is", "are", "was", "be", "do", "does", "did", "can", "could", "will", "would", "i", "you", "we", "me", "my", "your", "it", "its", "to", "of", "in", "on", "at", "for", "and", "or", "what", "whats", "which", "who", "how", "there", "this", "that", "with", "about", "have", "has", "get", "want", "please", "le", "la", "les", "un", "une", "des", "du", "de", "d", "l", "est", "sont", "a", "ai", "as", "avez", "avons", "y", "il", "elle", "on", "je", "tu", "nous", "vous", "mon", "ma", "mes", "ce", "cet", "cette", "et", "ou", "que", "qui", "quoi", "quel", "quelle", "quels", "quelles", "en", "au", "aux", "pour", "par", "sur", "dans", "ca", "c", "s", "qu", "est-ce",
-     # product-generic words that appear in nearly every question and discriminate nothing
-     "formation", "training", "course", "cours"])
+    [
+        "a",
+        "an",
+        "the",
+        "is",
+        "are",
+        "was",
+        "be",
+        "do",
+        "does",
+        "did",
+        "can",
+        "could",
+        "will",
+        "would",
+        "i",
+        "you",
+        "we",
+        "me",
+        "my",
+        "your",
+        "it",
+        "its",
+        "to",
+        "of",
+        "in",
+        "on",
+        "at",
+        "for",
+        "and",
+        "or",
+        "what",
+        "whats",
+        "which",
+        "who",
+        "how",
+        "there",
+        "this",
+        "that",
+        "with",
+        "about",
+        "have",
+        "has",
+        "get",
+        "want",
+        "please",
+        "le",
+        "la",
+        "les",
+        "un",
+        "une",
+        "des",
+        "du",
+        "de",
+        "d",
+        "l",
+        "est",
+        "sont",
+        "a",
+        "ai",
+        "as",
+        "avez",
+        "avons",
+        "y",
+        "il",
+        "elle",
+        "on",
+        "je",
+        "tu",
+        "nous",
+        "vous",
+        "mon",
+        "ma",
+        "mes",
+        "ce",
+        "cet",
+        "cette",
+        "et",
+        "ou",
+        "que",
+        "qui",
+        "quoi",
+        "quel",
+        "quelle",
+        "quels",
+        "quelles",
+        "en",
+        "au",
+        "aux",
+        "pour",
+        "par",
+        "sur",
+        "dans",
+        "ca",
+        "c",
+        "s",
+        "qu",
+        "est-ce",
+        # product-generic words that appear in nearly every question and discriminate nothing
+        "formation",
+        "training",
+        "course",
+        "cours",
+    ]
+)
 
 
 def _fold(w: str) -> str:
@@ -63,71 +166,165 @@ def _mock_entries(p: Product) -> list[dict]:
     feats = ", ".join(p.features)
     aud = " and ".join(p.audience)
     spec = [
-        ("How much does it cost?",
-         ["What is the price?", "Quel est le prix ?", "Combien ca coute ?", "Combien coute la formation ?",
-          "What are the fees and tuition?", "Tarif de la formation", "Quel budget prevoir ?"],
-         f"{plans}."),
-        ("What is included in the program?",
-         ["What features do I get?", "Qu'est-ce qui est inclus ?", "What will I learn?",
-          "What is the curriculum and syllabus?", "What topics are covered?",
-          "Quel est le programme de la formation ?", "Qu'est-ce qu'on apprend ?",
-          "Quel est le contenu du cours ?", "Is there hands-on practice and projects?",
-          "Les sessions sont-elles enregistrees ?"],
-         f"{p.name} includes: {feats}."),
-        ("When do the sessions take place?",
-         ["What is the schedule?", "Quels sont les horaires ?", "What time are the classes?",
-          "When does the course start and how long is it?", "Quand ont lieu les cours ?",
-          "Quelle est la duree de la formation ?", "Calendrier et dates des sessions",
-          "Combien de temps dure la formation ?", "Combien de semaines ?", "How many weeks does it last?"],
-         pol.schedule),
-        ("Is there a refund policy?",
-         ["Can I get my money back?", "Quelle est la politique de remboursement ?",
-          "Can I cancel and be reimbursed?", "Puis-je etre rembourse ?", "Annulation et remboursement"],
-         pol.refund),
-        ("Do I need prior experience?",
-         ["What are the prerequisites?", "Faut-il des prerequis ?", "What level is required to join?",
-          "Is it suitable for beginners?", "Quel niveau faut-il avoir ?",
-          "Do I need previous experience or skills?",
-          "Faut-il des connaissances de base ?", "Faut-il savoir programmer ou connaitre Python ?", "Est-ce adapte aux debutants ?"],
-         pol.prerequisites),
-        ("Do I get a certificate?",
-         ["Is there a certificate?", "Y a-t-il un certificat ?", "Do I receive a diploma on completion?",
-          "Is there an attestation of completion?", "Recevrai-je une attestation ou un diplome ?",
-          "Certification a la fin de la formation"],
-         pol.certificate),
-        ("Who is this program for?",
-         ["Who can join?", "A qui s'adresse la formation ?", "Who is the target audience?",
-          "Is it for students or developers?", "Is it open to beginners and students?", "Pour qui est cette formation ?", "Quel est le public cible ?"],
-         f"It is designed for {aud}."),
-        ("What is the difference between Standard and Pro?",
-         ["Standard vs Pro?", "Quelle est la difference entre Standard et Pro ?",
-          "What offers and plans are available?", "Is there a mentoring option?",
-          "Quelles sont les offres et formules ?", "Quelle formule choisir ?"],
-         f"Available plans: {plans}."),
-        ("How can I contact you?",
-         ["What is your contact email?", "Comment vous contacter ?", "How do I reach someone?",
-          "Where can I send a question to the team?", "Quelle est votre adresse email ?",
-          "Comment vous joindre ?"],
-         f"Write to {p.contact}."),
+        (
+            "How much does it cost?",
+            [
+                "What is the price?",
+                "Quel est le prix ?",
+                "Combien ca coute ?",
+                "Combien coute la formation ?",
+                "What are the fees and tuition?",
+                "Tarif de la formation",
+                "Quel budget prevoir ?",
+            ],
+            f"{plans}.",
+        ),
+        (
+            "What is included in the program?",
+            [
+                "What features do I get?",
+                "Qu'est-ce qui est inclus ?",
+                "What will I learn?",
+                "What is the curriculum and syllabus?",
+                "What topics are covered?",
+                "Quel est le programme de la formation ?",
+                "Qu'est-ce qu'on apprend ?",
+                "Quel est le contenu du cours ?",
+                "Is there hands-on practice and projects?",
+                "Les sessions sont-elles enregistrees ?",
+            ],
+            f"{p.name} includes: {feats}.",
+        ),
+        (
+            "When do the sessions take place?",
+            [
+                "What is the schedule?",
+                "Quels sont les horaires ?",
+                "What time are the classes?",
+                "When does the course start and how long is it?",
+                "Quand ont lieu les cours ?",
+                "Quelle est la duree de la formation ?",
+                "Calendrier et dates des sessions",
+                "Combien de temps dure la formation ?",
+                "Combien de semaines ?",
+                "How many weeks does it last?",
+            ],
+            pol.schedule,
+        ),
+        (
+            "Is there a refund policy?",
+            [
+                "Can I get my money back?",
+                "Quelle est la politique de remboursement ?",
+                "Can I cancel and be reimbursed?",
+                "Puis-je etre rembourse ?",
+                "Annulation et remboursement",
+            ],
+            pol.refund,
+        ),
+        (
+            "Do I need prior experience?",
+            [
+                "What are the prerequisites?",
+                "Faut-il des prerequis ?",
+                "What level is required to join?",
+                "Is it suitable for beginners?",
+                "Quel niveau faut-il avoir ?",
+                "Do I need previous experience or skills?",
+                "Faut-il des connaissances de base ?",
+                "Faut-il savoir programmer ou connaitre Python ?",
+                "Est-ce adapte aux debutants ?",
+            ],
+            pol.prerequisites,
+        ),
+        (
+            "Do I get a certificate?",
+            [
+                "Is there a certificate?",
+                "Y a-t-il un certificat ?",
+                "Do I receive a diploma on completion?",
+                "Is there an attestation of completion?",
+                "Recevrai-je une attestation ou un diplome ?",
+                "Certification a la fin de la formation",
+            ],
+            pol.certificate,
+        ),
+        (
+            "Who is this program for?",
+            [
+                "Who can join?",
+                "A qui s'adresse la formation ?",
+                "Who is the target audience?",
+                "Is it for students or developers?",
+                "Is it open to beginners and students?",
+                "Pour qui est cette formation ?",
+                "Quel est le public cible ?",
+            ],
+            f"It is designed for {aud}.",
+        ),
+        (
+            "What is the difference between Standard and Pro?",
+            [
+                "Standard vs Pro?",
+                "Quelle est la difference entre Standard et Pro ?",
+                "What offers and plans are available?",
+                "Is there a mentoring option?",
+                "Quelles sont les offres et formules ?",
+                "Quelle formule choisir ?",
+            ],
+            f"Available plans: {plans}.",
+        ),
+        (
+            "How can I contact you?",
+            [
+                "What is your contact email?",
+                "Comment vous contacter ?",
+                "How do I reach someone?",
+                "Where can I send a question to the team?",
+                "Quelle est votre adresse email ?",
+                "Comment vous joindre ?",
+            ],
+            f"Write to {p.contact}.",
+        ),
     ]
     out = [{"question": q, "variants": v, "answer": a} for q, v, a in spec if a]
     known = {e["question"].lower() for e in out}
     for q in p.faq_seed:
         if q.lower() not in known:
-            out.append({"question": q, "variants": [q.rstrip("?").strip(), f"Question: {q}"],
-                        "answer": p.description})
+            out.append(
+                {
+                    "question": q,
+                    "variants": [q.rstrip("?").strip(), f"Question: {q}"],
+                    "answer": p.description,
+                }
+            )
     return out
 
 
 def generate_qa(product: Product | None = None) -> list[QAEntry]:
     """Return UNSAVED draft entries (use save_drafts to persist)."""
     product = product or load_product()
-    system = ("You write a customer FAQ for one product. Use only the product JSON. "
-              'Reply as JSON {"entries":[{"question","variants","answer"}]} with 2-3 EN/FR variants each.')
-    result = chat_json(system, product.model_dump_json(), QADraftList, task="qa_generate",
-                       mock=lambda: {"entries": _mock_entries(product)})
-    return [QAEntry(question=e.question, variants=list(e.variants), answer=e.answer, status="draft")
-            for e in result.entries]
+    system = (
+        "You write a customer FAQ for one product. Use only the product JSON. "
+        'Reply as JSON {"entries":[{"question","variants","answer"}]} with 2-3 EN/FR variants each.'
+    )
+    result = chat_json(
+        system,
+        product.model_dump_json(),
+        QADraftList,
+        task="qa_generate",
+        mock=lambda: {"entries": _mock_entries(product)},
+    )
+    return [
+        QAEntry(
+            product_id=product.id,
+            question=e.question,
+            variants=list(e.variants),
+            answer=e.answer,
+            status="draft",
+        )
+        for e in result.entries
+    ]
 
 
 def save_drafts(session: Session, entries: list[QAEntry]) -> list[QAEntry]:
@@ -166,11 +363,17 @@ def reject(session: Session, entry_id: str) -> QAEntry:
     return _set_status(session, entry_id, "rejected")
 
 
-def update(session: Session, entry_id: str, question: str, answer: str,
-           variants: list[str]) -> QAEntry:
+def update(
+    session: Session, entry_id: str, question: str, answer: str, variants: list[str]
+) -> QAEntry:
     """Edit an entry; it goes back to draft and needs re-approval."""
     entry = _get(session, entry_id)
-    entry.question, entry.answer, entry.variants, entry.status = question, answer, list(variants), "draft"
+    entry.question, entry.answer, entry.variants, entry.status = (
+        question,
+        answer,
+        list(variants),
+        "draft",
+    )
     session.add(entry)
     session.commit()
     session.refresh(entry)
@@ -288,9 +491,14 @@ def _get_matcher(entries: list[QAEntry]) -> Matcher:
         return _cache["matcher"]
 
 
-def match(session: Session, text: str) -> tuple[QAEntry | None, float]:
+def match(
+    session: Session, text: str, product_id: str | None = None
+) -> tuple[QAEntry | None, float]:
     """Best approved entry if its score clears the active threshold, else (None, score)."""
-    entries = list(session.exec(select(QAEntry).where(QAEntry.status == "approved").order_by(QAEntry.id)))
+    stmt = select(QAEntry).where(QAEntry.status == "approved")
+    if product_id:
+        stmt = stmt.where(QAEntry.product_id == product_id)
+    entries = list(session.exec(stmt.order_by(QAEntry.id)))
     matcher = _get_matcher(entries)
     entry_id, score = matcher.best(text)
     if entry_id is None or score < matcher.threshold:
