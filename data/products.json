@@ -1,0 +1,165 @@
+{
+  "products": [
+    {
+      "id": "prod_ai_bootcamp",
+      "name": "AI Foundations Bootcamp",
+      "tagline": "Learn to build with AI in 4 weeks",
+      "description": "A 4-week live bootcamp that takes students and junior developers from AI basics to a working project: prompting, APIs, simple agents and deployment.",
+      "audience": ["students", "junior developers"],
+      "price": 250.0,
+      "currency": "TND",
+      "plans": [
+        {"id": "std", "name": "Standard", "price": 250.0},
+        {"id": "pro", "name": "Pro (mentoring)", "price": 450.0}
+      ],
+      "features": ["16 live sessions", "Hands-on projects", "Certificate of completion", "Recordings for 3 months"],
+      "faq_seed": [
+        "Is there a refund policy?",
+        "Do I need prior experience?",
+        "When do the sessions take place?",
+        "Do I get a certificate?",
+        "What is the difference between Standard and Pro?"
+      ],
+      "policies": {
+        "refund": "Refund within 7 days if fewer than 2 sessions attended.",
+        "schedule": "Sessions run Monday to Thursday, 18:00-20:00 Tunisia time, for 4 weeks.",
+        "prerequisites": "Basic Python knowledge is helpful; no prior AI experience is required.",
+        "certificate": "A certificate of completion is issued to students who attend at least 12 of 16 sessions."
+      },
+      "contact": "contact@example.test",
+      "tone": "friendly, concise, professional",
+      "match": {
+        "goal": ["build-ai-products", "automate-work"],
+        "level": ["beginner", "some-code"],
+        "budget": ["low"],
+        "format": ["live-cohort"],
+        "audience": ["individual", "student"],
+        "pace": ["part-time"]
+      }
+    },
+    {
+      "id": "prod_data_sprint",
+      "name": "Data Analytics Sprint",
+      "tagline": "Turn raw data into decisions in 6 weeks",
+      "description": "A live analytics sprint for analysts and developers who want a repeatable path from messy data to dashboards, models and a decision-ready story.",
+      "audience": ["analysts", "product teams", "developers"],
+      "price": 690.0,
+      "currency": "TND",
+      "plans": [
+        {"id": "core", "name": "Core", "price": 690.0},
+        {"id": "team", "name": "Team (3 seats)", "price": 1750.0}
+      ],
+      "features": ["12 live labs", "Real dataset capstone", "Dashboard review", "Career portfolio piece"],
+      "faq_seed": ["What tools do we use?", "How much time per week?", "Is there a certificate?"],
+      "policies": {
+        "refund": "Full refund before the second live lab.",
+        "schedule": "Two evening sessions per week for 6 weeks.",
+        "prerequisites": "Comfort with spreadsheets; basic Python is a plus.",
+        "certificate": "Certificate issued after the capstone review."
+      },
+      "contact": "contact@example.test",
+      "tone": "precise, practical, professional",
+      "match": {
+        "goal": ["analyze-data"],
+        "level": ["some-code", "developer"],
+        "budget": ["medium"],
+        "format": ["live-cohort", "workshop"],
+        "audience": ["individual", "startup"],
+        "pace": ["part-time", "full-time"]
+      }
+    },
+    {
+      "id": "prod_automation_studio",
+      "name": "AI Automation Studio",
+      "tagline": "Ship your first AI workflow, at your own pace",
+      "description": "A self-paced studio with guided builds for founders and operators who want to automate real work with prompts, APIs and lightweight agents.",
+      "audience": ["founders", "operators", "indie builders"],
+      "price": 390.0,
+      "currency": "TND",
+      "plans": [
+        {"id": "studio", "name": "Studio", "price": 390.0},
+        {"id": "studio_pro", "name": "Studio Pro (reviews)", "price": 640.0}
+      ],
+      "features": ["8 guided builds", "Reusable workflow templates", "Community office hours", "Lifetime updates"],
+      "faq_seed": ["Is it live or self-paced?", "Can I use my own tools?", "How long do I keep access?"],
+      "policies": {
+        "refund": "Refund within 14 days if less than 25 percent of the material is completed.",
+        "schedule": "Self-paced, with two live office hours every month.",
+        "prerequisites": "No coding required for the first track; API basics for the advanced builds.",
+        "certificate": "Completion badge after four guided builds."
+      },
+      "contact": "contact@example.test",
+      "tone": "direct, builder-first, pragmatic",
+      "match": {
+        "goal": ["automate-work", "build-ai-products"],
+        "level": ["some-code", "developer"],
+        "budget": ["medium"],
+        "format": ["self-paced"],
+        "audience": ["individual", "startup"],
+        "pace": ["part-time", "weekend"]
+      }
+    },
+    {
+      "id": "prod_enterprise_enablement",
+      "name": "Enterprise AI Enablement",
+      "tagline": "Bring your whole team up to speed on AI",
+      "description": "A tailored enablement programme for teams: workshops, role-specific playbooks and a guided pilot that turns AI from a side experiment into a working capability.",
+      "audience": ["enterprise teams", "managers", "operations"],
+      "price": 3500.0,
+      "currency": "TND",
+      "plans": [
+        {"id": "pilot", "name": "Pilot (up to 15 seats)", "price": 3500.0},
+        {"id": "scale", "name": "Scale (up to 50 seats)", "price": 8900.0}
+      ],
+      "features": ["Role-specific workshops", "Team playbooks", "Guided pilot", "Executive readout"],
+      "faq_seed": ["How many people can join?", "Can it use our own tools?", "How is success measured?"],
+      "policies": {
+        "refund": "Engagement can be paused before the second workshop at no cost.",
+        "schedule": "Four workshops over two months, scheduled with your team.",
+        "prerequisites": "No prior AI experience required; one internal sponsor is needed.",
+        "certificate": "Team completion report and individual certificates."
+      },
+      "contact": "contact@example.test",
+      "tone": "calm, executive, outcome-focused",
+      "match": {
+        "goal": ["train-team", "automate-work"],
+        "level": ["beginner", "developer"],
+        "budget": ["high"],
+        "format": ["workshop", "live-cohort"],
+        "audience": ["enterprise", "startup"],
+        "pace": ["full-time"]
+      }
+    },
+    {
+      "id": "prod_solo_toolkit",
+      "name": "Solo Maker AI Toolkit",
+      "tagline": "A compact AI toolkit for one-person businesses",
+      "description": "A low-cost, weekend-friendly toolkit for solo makers: prompts, automations and a small project that puts an AI feature in front of real users fast.",
+      "audience": ["solo founders", "students", "side projects"],
+      "price": 120.0,
+      "currency": "TND",
+      "plans": [
+        {"id": "kit", "name": "Toolkit", "price": 120.0},
+        {"id": "kit_plus", "name": "Toolkit Plus (review)", "price": 220.0}
+      ],
+      "features": ["5 build recipes", "Prompt library", "Launch checklist", "One project review"],
+      "faq_seed": ["Do I need to code?", "How much time does it take?", "Is there support?"],
+      "policies": {
+        "refund": "Refund within 7 days, no questions asked.",
+        "schedule": "Self-paced; the core path fits in one weekend.",
+        "prerequisites": "No coding required; curiosity is enough.",
+        "certificate": "Completion badge after publishing one project."
+      },
+      "contact": "contact@example.test",
+      "tone": "warm, concise, encouraging",
+      "match": {
+        "goal": ["build-ai-products", "automate-work"],
+        "level": ["beginner", "some-code"],
+        "budget": ["low"],
+        "format": ["self-paced"],
+        "audience": ["individual", "student"],
+        "pace": ["weekend", "part-time"]
+      }
+    }
+  ]
+}

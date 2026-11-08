@@ -23,6 +23,14 @@
   dl.policies { margin:0; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; }
   dl.policies dt { font-weight:600; text-transform:capitalize; }
   dl.policies dd { margin:0 0 10px; color:var(--muted); }
+  .fitcall { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    margin-top:-22px; padding:16px 18px; background:var(--card); border:1px solid var(--line);
+    border-radius:10px; box-shadow:0 4px 18px rgba(15,23,42,.06); }
+  .fitcall b { display:block; font-size:1rem; }
+  .fitcall span { color:var(--muted); font-size:.88rem; }
+  .fitcall a { flex:none; padding:9px 14px; border-radius:8px; background:var(--brand); color:#fff;
+    font-weight:600; font-size:.9rem; text-decoration:none; }
+  .fitcall a:hover { filter:brightness(1.08); }
   footer { color:var(--muted); font-size:.9rem; padding: 8px 0 120px; }
 </style>
 </head>
@@ -36,6 +44,14 @@
 </header>
 
 <main class="wrap">
+  <div class="fitcall">
+    <div>
+      <b>Not sure this is the right fit?</b>
+      <span>Answer six quick questions and get a product recommendation.</span>
+    </div>
+    <a href="/discover">Find your fit</a>
+  </div>
+
   <section>
     <h2>About</h2>
     <p>{{ product.description }}</p>

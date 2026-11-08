@@ -17,7 +17,8 @@ Built for the TechX ENIT x ENICarthage 14h hackathon, "The Autonomous FinTech Te
 | 4. Financial Data Analyst | `app/services/analytics.py` | Deterministic KPIs (plain code), optional LLM narrative, revenue forecast (linear trend, bonus) |
 | 6. Security and Fraud Detection | `app/gateway/` | Layered gateway, permission matrix, explainable fraud rules, hash-chained audit log |
 
-Also: Streamlit owner console (7 pages), product page and chat widget, attack evaluation set.
+Also: Streamlit owner console (7 pages), product page and chat widget, a deterministic product fit finder
+(`/discover`), and an attack evaluation set.
 
 ## Quickstart
 
@@ -40,6 +41,7 @@ uv run python tasks.py demo        # reseed + scripted demo (spec section 13) in
 ```
 
 - Product page: http://127.0.0.1:8000/
+- Product fit finder: http://127.0.0.1:8000/discover
 - API docs: http://127.0.0.1:8000/docs
 - Dashboard: http://localhost:8501
 

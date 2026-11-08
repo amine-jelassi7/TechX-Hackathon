@@ -8,11 +8,13 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlmodel import Session, select
 
+from app import audit
 from app.db import get_session
 from app.llm import load_product
 from app.models import Interaction
 from app.orchestrator import build_orchestrator
-from app.schemas import AgentMessage, ChatRequest, PayRequest, RatingRequest
+from app.schemas import AgentMessage, ChatRequest, FitQuizAnswers, PayRequest, RatingRequest
+from app.services import recommender
 from app.services.prospects import prospect_for_session
 
 Db = Annotated[Session, Depends(get_session)]
@@ -28,6 +30,25 @@ def _trace() -> str:
 @router.get("/", response_class=HTMLResponse)
 def product_page(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "product_page.html", {"product": load_product().model_dump()})
+
+
+@router.get("/discover", response_class=HTMLResponse)
+def discover_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "discover.html", {
+        "steps": recommender.question_payload(),
+        "product_count": len(recommender.load_catalog().products),
+        "flagship_id": load_product().id,
+    })
+
+
+@router.post("/api/recommend")
+def recommend(body: FitQuizAnswers, session: Db) -> dict:
+    trace_id = _trace()
+    results = recommender.recommend(body)
+    audit.log_event(session, trace_id=trace_id, actor="discovery", event_type="product_recommended",
+                    decision="allow",
+                    payload={"answers": body.model_dump(), "top": [r.id for r in results]})
+    return {"trace_id": trace_id, "results": [r.model_dump() for r in results]}
 
 
 @router.post("/api/chat")

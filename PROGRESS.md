@@ -4,7 +4,7 @@
 
 Single source of truth for where the project stands. Updated after every step.
 Anyone continuing (Claude Code, OpenCode, a human): read `AGENTS.md`, then this file, then only the
-spec sections you need. Last updated: 2026-11-08 (step W done).
+spec sections you need. Last updated: 2026-11-08 (step D done).
 
 ## 0. Resume here
 All 12 code-review findings are fixed with regression tests (PR #19): `uv run pytest -q` -> 390 passed,
@@ -48,10 +48,11 @@ uv run python tasks.py dashboard  # Streamlit owner console
 | S4 | Orchestrator, agents (base, sales, payment), public + owner routers, integration tests | done | see PR list |
 | S2b | Q&A matcher fix (ambiguity guard, word+char scoring, richer variants) | done | see PR list |
 | W | Wiring: `app/agents/insights.py`, owner endpoints insights/run, recommendations, drafts, mark_sent (drafts deduped per lead), `/owner/simulate` (demo + attack, `app/services/simulator.py`), `python tasks.py demo`, dashboard actor mapping vs real backend actors | done | see PR list |
-| F | Final: end-to-end browser check (product page chat + pay, dashboard on real backend), review pass, PITCH numbers | next | - |
+| D | Public product fit finder: `data/products.json` catalog, `app/services/recommender.py` (deterministic 6-signal scoring), `GET /discover` + `POST /api/recommend`, dashboard-styled `discover.html`, product page CTA | done | - |
+| F | Final: end-to-end browser check (product page chat + pay, discover quiz, dashboard on real backend), review pass, PITCH numbers | next | - |
 
 ## 4. Next actions (in order)
-1. F (final checks): browser check of product page + dashboard on the real backend (`uv run python tasks.py demo`, then `run` and `dashboard`), review pass, PITCH numbers.
+1. F (final checks): browser check of product page + `/discover` + dashboard on the real backend (`uv run python tasks.py demo`, then `run` and `dashboard`), review pass, PITCH numbers.
 2. Optional: held-out Q&A question set (current 100% is optimistic, see docs/SECURITY.md).
 
 ## Dev tips

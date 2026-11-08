@@ -28,6 +28,12 @@
   Luhn-valid card number. Nothing that could be a card number is stored.
 - **Owner token.** Empty or `change-me` with `APP_ENV != dev`: every owner call returns 401 and startup logs an
   error; in dev it works and logs a warning. `.env.example` keeps `APP_ENV=dev` for the demo.
+- **Product discovery is a deterministic weighted quiz, not an LLM call.** `data/products.json` lists the
+  catalog; each product carries a `match` profile for six signals (goal, level, budget, format, audience,
+  pace). `app/services/recommender.py` sums fixed weights (0.28/0.16/0.14/0.18/0.12/0.12) and returns 0..100
+  fit scores with human-readable reasons, so the public `/discover` page is offline, testable and never
+  invents a match. The flagship `data/product.json` remains the single product the Sales and Payment agents
+  sell; the catalog is used only for discovery.
 - **Conversion KPI** is `converted_prospects / interested_prospects` where converted = paid AND interested;
   `paid_prospects` still counts every payer. An owner-approved payment ends `succeeded` (the `approved` status
   belongs to the ApprovalRequest, never to a Payment).

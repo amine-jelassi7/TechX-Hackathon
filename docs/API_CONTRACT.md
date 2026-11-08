@@ -56,12 +56,17 @@ All responses JSON. Timestamps ISO 8601.
 | Method + path | Body | Response |
 |---|---|---|
 | `GET /` | | product page HTML |
+| `GET /discover` | | product fit quiz page HTML (catalog from `data/products.json`) |
+| `POST /api/recommend` | `FitQuizAnswers` (six literal fields; extra fields -> 422) | `{trace_id, results: [{id, name, tagline, description, audience, price, currency, plans, features, contact, fit, band, reasons}]}` |
 | `POST /api/chat` | `ChatRequest` (`session_id` matches `^[A-Za-z0-9_-]{1,64}$`, else 422) | `{reply, source, interest_level, blocked: bool, trace_id}` |
 | `POST /api/pay` | `PayRequest` (extra fields -> 422; `test_token` matches `^tok_[a-z0-9_]{1,32}$`, `session_id` as above) | `{status, message, payment_id, trace_id}` |
 | `POST /api/rating` | `RatingRequest` | `{ok: true}` |
 
 ## 4. Template rendering
 `GET /` renders `product_page.html` with `product=Product.model_dump()` (a dict; `policies` must be iterable with `.items()`).
+`GET /discover` renders `discover.html` with `steps` (question list), `product_count` and `flagship_id`.
+`POST /api/recommend` logs one `product_recommended` audit event (actor `discovery`); `fit` is 0..100 and
+`band` is `Strong fit` (>=80), `Good fit` (>=60) or `Possible fit`.
 
 ## 5. `data/eval_results.json` (written by `scripts/run_evals.py`, read by the dashboard)
 ```json

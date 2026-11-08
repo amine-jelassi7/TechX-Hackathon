@@ -41,6 +41,50 @@ class Product(BaseModel):
     tone: str
 
 
+# ---- Product discovery (public fit quiz) ----
+class MatchProfile(BaseModel):
+    goal: list[str] = Field(default_factory=list)
+    level: list[str] = Field(default_factory=list)
+    budget: list[str] = Field(default_factory=list)
+    format: list[str] = Field(default_factory=list)
+    audience: list[str] = Field(default_factory=list)
+    pace: list[str] = Field(default_factory=list)
+
+
+class CatalogProduct(Product):
+    match: MatchProfile
+
+
+class ProductCatalog(BaseModel):
+    products: list[CatalogProduct]
+
+
+class FitQuizAnswers(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    goal: Literal["build-ai-products", "analyze-data", "automate-work", "train-team"]
+    level: Literal["beginner", "some-code", "developer"]
+    budget: Literal["low", "medium", "high"]
+    format: Literal["live-cohort", "self-paced", "workshop"]
+    audience: Literal["individual", "student", "startup", "enterprise"]
+    pace: Literal["full-time", "part-time", "weekend"]
+
+
+class ProductMatch(BaseModel):
+    id: str
+    name: str
+    tagline: str
+    description: str
+    audience: list[str]
+    price: float
+    currency: str
+    plans: list[Plan]
+    features: list[str]
+    contact: str
+    fit: int
+    band: str
+    reasons: list[str]
+
+
 # ---- Agent envelope (6.1) ----
 class AgentMessage(BaseModel):
     id: str = Field(default_factory=lambda: uuid.uuid4().hex)
