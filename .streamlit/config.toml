@@ -1,0 +1,20 @@
+[theme]
+base = "dark"
+primaryColor = "#46B4FF"
+backgroundColor = "#06080B"
+secondaryBackgroundColor = "#0B0F14"
+textColor = "#DCE3EA"
+font = "sans-serif"
+codeFont = "monospace"
+baseRadius = "2px"
+borderColor = "#1B242E"
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = "none"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
