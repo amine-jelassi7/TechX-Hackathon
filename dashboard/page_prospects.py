@@ -7,7 +7,6 @@ import json
 import streamlit as st
 
 from dashboard import api, theme
-from dashboard.common import call
 
 
 def render() -> None:
@@ -34,21 +33,29 @@ def render() -> None:
             st.warning("Confirm possible API usage before starting research.")
         else:
             st.session_state.pop("buyer_research_result", None)
-            ok, result = call(
-                api.post,
-                "/owner/prospects/discover",
-                json={
-                    "product_id": api.selected_product_id,
-                    "location": location.strip(),
-                    "limit": limit,
-                },
-            )
-            if ok:
+            try:
+                result = api.post(
+                    "/owner/prospects/discover",
+                    json={
+                        "product_id": api.selected_product_id,
+                        "location": location.strip(),
+                        "limit": limit,
+                    },
+                )
                 st.session_state["buyer_research_result"] = result
+                st.session_state.pop("buyer_research_offline", None)
+            except api.ApiError as exc:
+                if str(exc).startswith("Backend not reachable"):
+                    st.session_state["buyer_research_offline"] = True
+                else:
+                    st.error(str(exc))
 
     result = st.session_state.get("buyer_research_result")
     if not result:
-        st.info("Run research to build a shortlist from the selected product profile.")
+        if st.session_state.get("buyer_research_offline"):
+            st.info("Buyer discovery is ready. Connect the backend to research companies and show live results.")
+        else:
+            st.info("Run research to build a shortlist from the selected product profile.")
         return
 
     st.metric("Companies with a recent signal and contact path", result.get("count", 0))
