@@ -55,26 +55,26 @@ DISPOSABLE = ["mailinator.test", "tempmail.test"]
 
 # (text, interest_level, objection)
 SNIPPETS = [
-    ("C'est trop cher pour moi, vous avez une reduction ?", "medium", "price"),
-    ("The price is too high for a student budget.", "medium", "price"),
-    ("السعر مرتفع شوية", "low", "price"),
-    ("Les horaires 18h-20h ne me conviennent pas.", "low", "schedule"),
-    ("I work until 19:00, is the schedule flexible?", "medium", "schedule"),
-    ("المواعيد ما تناسبنيش", "low", "schedule"),
-    ("Je n'ai jamais fait de Python, est-ce que je peux suivre ?", "medium", "prerequisites"),
-    ("Do I need prior experience in machine learning?", "low", "prerequisites"),
-    ("Est-ce que cette formation est serieuse ? Je ne vous connais pas.", "low", "trust"),
-    ("How do I know this bootcamp is legit?", "low", "trust"),
-    ("Le certificat est-il reconnu par les employeurs ?", "medium", "certificate"),
-    ("Does the certificate have any real value?", "medium", "certificate"),
-    ("Je veux m'inscrire, comment payer ?", "high", None),
-    ("I want to sign up for the Standard plan.", "high", None),
-    ("بغيت نسجل في الدورة", "high", None),
-    ("Quel est le prix du plan Pro ?", "medium", None),
-    ("Tell me more about the bootcamp.", "low", None),
+    ("Will this integrate with my current POS?", "medium", "integration"),
+    ("Is the app compatible with the POS we already use?", "low", "integration"),
+    ("هل التطبيق يخدم مع نظام البيع اللي عنا؟", "low", "integration"),
+    ("Does the Restaurant App Suite include QR menus?", "high", None),
+    ("Which engineer built the Cafe App?", "low", None),
+    ("How do I know the developer is reliable?", "low", "reliability"),
+    ("Est-ce que je peux personnaliser l'application pour mon café ?", "low", "customization"),
+    ("Can I contact the engineer directly for setup?", "high", None),
+    ("Is this a monthly fee or a one-time project purchase?", "medium", "pricing"),
+    ("Do I own the software after I buy it?", "low", "ownership"),
+    ("Can the engineer customize the dashboard for my restaurant?", "low", "customization"),
+    ("Est-ce que le développeur peut ajouter nos fonctionnalités ?", "low", "customization"),
+    ("Je veux acheter l'application Restaurant, comment faire ?", "high", None),
+    ("I want to buy the Cafe Loyalty App.", "low", None),
+    ("نحب نركب تطبيق للمقهى متاعي", "low", None),
+    ("Quel est le prix de l'application café ?", "low", None),
+    ("Tell me more about the apps for restaurants and cafes.", "low", None),
     ("Bonjour", "none", None),
 ]
-AGENT_REPLY = "Merci pour votre message. Voici ce que je peux vous dire sur le bootcamp."
+AGENT_REPLY = "Merci pour votre message. Voici ce que je peux vous dire sur les applications SaaS disponibles."
 
 
 def seed(engine: Engine | None = None) -> dict[str, int]:
@@ -115,7 +115,7 @@ def _seed_owner_product(s: Session, product: Product) -> None:
     s.add(
         SaaSProduct(
             id=product.id,
-            slug="ai-foundations-bootcamp",
+            slug="saas-hub-ready-made-projects",
             status="published",
             product_json=data,
             published_json=data,
@@ -133,7 +133,7 @@ def _seed_owner_product(s: Session, product: Product) -> None:
         actor="seed",
         event_type="page_published",
         decision="allow",
-        payload={"product_id": product.id, "slug": "ai-foundations-bootcamp", "synthetic": True},
+        payload={"product_id": product.id, "slug": "saas-hub-ready-made-projects", "synthetic": True},
     )
     scores = [92, 84, 78, 69, 96]
     for i, score in enumerate(scores):
@@ -330,12 +330,12 @@ def _seed_payments(s: Session, prospects: list[Prospect], interested: set[str]) 
 
 def _seed_leads(s: Session, rng: random.Random) -> None:
     interests = [
-        "python",
-        "machine learning",
-        "chatbots",
-        "data analysis",
-        "career change",
-        "AI for business",
+        "restaurant POS integration",
+        "QR digital menu",
+        "cafe loyalty app",
+        "online reservations",
+        "restaurant dashboard",
+        "custom SaaS deployment",
     ]
     sources = ["newsletter", "linkedin", "event", "referral", "cold_list"]
     for i in range(25):

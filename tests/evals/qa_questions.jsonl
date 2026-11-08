@@ -1,23 +1,23 @@
-{"id": "q01", "question": "how much does the course cost?", "lang": "en", "expected": "qa_price"}
-{"id": "q02", "question": "c'est combien le prix de la formation ?", "lang": "fr", "expected": "qa_price"}
-{"id": "q03", "question": "What will I learn in this training, what topics are covered?", "lang": "en", "expected": "qa_features"}
-{"id": "q04", "question": "qu'est ce qu'on apprend dans le programme exactement", "lang": "fr", "expected": "qa_features"}
-{"id": "q05", "question": "when does the next session start and what are the hours?", "lang": "en", "expected": "qa_schedule"}
-{"id": "q06", "question": "les cours commencent quand ? quel horaire ?", "lang": "fr", "expected": "qa_schedule"}
-{"id": "q07", "question": "Can I get my money back if I change my mind?", "lang": "en", "expected": "qa_refund"}
-{"id": "q08", "question": "est ce que je peux etre rembourse si ca ne me plait pas", "lang": "fr", "expected": "qa_refund"}
-{"id": "q09", "question": "do i need any previus experiance or skills before joining?", "lang": "en", "expected": "qa_prerequisites"}
-{"id": "q10", "question": "faut-il des connaissances de base pour s'inscrire ?", "lang": "fr", "expected": "qa_prerequisites"}
-{"id": "q11", "question": "Do I receive a diploma or certificate at the end?", "lang": "en", "expected": "qa_certificate"}
-{"id": "q12", "question": "est-ce qu'on recoit une attestation a la fin de la formation", "lang": "fr", "expected": "qa_certificate"}
-{"id": "q13", "question": "who is this training meant for? is it ok for beginners or students?", "lang": "en", "expected": "qa_audience"}
-{"id": "q14", "question": "what plans or packs do you offer, and what is the difference?", "lang": "en", "expected": "qa_plans"}
-{"id": "q15", "question": "quelles sont les formules disponibles ?", "lang": "fr", "expected": "qa_plans"}
-{"id": "q16", "question": "how can I reach someone from your team by phone or email?", "lang": "en", "expected": "qa_contact"}
-{"id": "q17", "question": "comment vous contacter ? un numero ou une adresse mail", "lang": "fr", "expected": "qa_contact"}
-{"id": "q18", "question": "Is there a guaranteed job after finishing the course?", "lang": "en", "expected": "none"}
-{"id": "q19", "question": "what is the weather like in Tunis today", "lang": "en", "expected": "none"}
-{"id": "q20", "question": "donne-moi une recette de couscous", "lang": "fr", "expected": "none"}
-{"id": "q21", "question": "Who won the football match yesterday?", "lang": "en", "expected": "none"}
-{"id": "q22", "question": "est-ce que l'instructeur travaille chez Google ?", "lang": "fr", "expected": "none"}
-{"id": "q23", "question": "can you write me a python script to scrape websites", "lang": "en", "expected": "none"}
+{"id":"q01","question":"How much does the Restaurant App Suite cost?","lang":"en","expected":"qa_price"}
+{"id":"q02","question":"Combien coûte l'application Restaurant ?","lang":"fr","expected":"qa_price"}
+{"id":"q03","question":"What do the ready-made restaurant and cafe apps include?","lang":"en","expected":"qa_features"}
+{"id":"q04","question":"Quelles fonctionnalités sont incluses dans les applications ?","lang":"fr","expected":"qa_features"}
+{"id":"q05","question":"How quickly can I deploy an app for my restaurant?","lang":"en","expected":"qa_schedule"}
+{"id":"q06","question":"Combien de temps faut-il pour déployer l'application ?","lang":"fr","expected":"qa_schedule"}
+{"id":"q07","question":"Can I get a refund if the app is not right for my business?","lang":"en","expected":"qa_refund"}
+{"id":"q08","question":"Quelles sont les conditions de remboursement ?","lang":"fr","expected":"qa_refund"}
+{"id":"q09","question":"Do I need technical experience to use these apps?","lang":"en","expected":"qa_prerequisites"}
+{"id":"q10","question":"Faut-il des compétences techniques pour acheter une application ?","lang":"fr","expected":"qa_prerequisites"}
+{"id":"q11","question":"Do I own the software after purchasing it?","lang":"en","expected":"qa_certificate"}
+{"id":"q12","question":"Est-ce que je deviens propriétaire du logiciel ?","lang":"fr","expected":"qa_certificate"}
+{"id":"q13","question":"Who is this marketplace for? Can cafe managers use it?","lang":"en","expected":"qa_audience"}
+{"id":"q14","question":"Which projects are available and who built them?","lang":"en","expected":"qa_plans"}
+{"id":"q15","question":"Quelles applications sont disponibles à l'achat ?","lang":"fr","expected":"qa_plans"}
+{"id":"q16","question":"How do I contact the engineer who built the Cafe Loyalty App?","lang":"en","expected":"qa_contact"}
+{"id":"q17","question":"Comment contacter l'ingénieur qui a créé l'application ?","lang":"fr","expected":"qa_contact"}
+{"id":"q18","question":"Can you guarantee that the developer will always be available?","lang":"en","expected":"none"}
+{"id":"q19","question":"What is the weather like in Tunis today?","lang":"en","expected":"none"}
+{"id":"q20","question":"Donne-moi une recette de couscous.","lang":"fr","expected":"none"}
+{"id":"q21","question":"Who won the football match yesterday?","lang":"en","expected":"none"}
+{"id":"q22","question":"Does the Restaurant App Suite integrate with my exact POS provider?","lang":"en","expected":"none"}
+{"id":"q23","question":"Can you write me a Python script to scrape websites?","lang":"en","expected":"none"}

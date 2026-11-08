@@ -22,26 +22,26 @@
 </style>
 
 <div id="sx-chat">
-  <div id="sx-head"><span>Ask us anything</span><span id="sx-toggle">+</span></div>
+  <div id="sx-head"><span>Ask about our SaaS apps</span><span id="sx-toggle">+</span></div>
   <div id="sx-body">
     <div id="sx-log" aria-live="polite"></div>
     <div id="sx-row">
-      <input id="sx-input" type="text" maxlength="1000" placeholder="Type your question" autocomplete="off">
+      <input id="sx-input" type="text" maxlength="1000" placeholder="Ask about an app or its engineer" autocomplete="off">
       <button id="sx-mic" class="alt" type="button" style="display:none" title="Speak">Mic</button>
       <button id="sx-send" type="button">Send</button>
     </div>
 
     <div class="sx-sec">
-      <label for="sx-plan">Plan (test payment, no real money)</label>
+      <label for="sx-plan">Choose an app (test purchase, no real money)</label>
       <select id="sx-plan">
         {% for plan in product.plans %}
         <option value="{{ plan.id }}">{{ plan.name }} - {{ "%.2f"|format(plan.price) }} {{ product.currency }}</option>
         {% endfor %}
       </select>
       <div class="sx-btns">
-        <button type="button" class="sx-pay" data-token="tok_success">Pay (test success)</button>
-        <button type="button" class="sx-pay" data-token="tok_declined">Pay (test declined)</button>
-        <button type="button" class="sx-pay" data-token="tok_pending">Pay (test pending)</button>
+        <button type="button" class="sx-pay" data-token="tok_success">Purchase (test success)</button>
+        <button type="button" class="sx-pay" data-token="tok_declined">Purchase (test declined)</button>
+        <button type="button" class="sx-pay" data-token="tok_pending">Purchase (test pending)</button>
       </div>
       <div id="sx-payres"></div>
     </div>

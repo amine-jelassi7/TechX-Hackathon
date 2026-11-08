@@ -289,7 +289,7 @@
   <div class="wrap">
     <a class="brand" href="/">Souk<span>SaaS</span></a>
     <div class="meta">
-      <span class="pill ok">deterministic scoring</span>
+      <span class="pill ok">ready-made business apps</span>
       <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme">Light</button>
     </div>
   </div>
@@ -299,12 +299,12 @@
   <section class="hero wrap">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow reveal">Product brief</div>
+        <div class="eyebrow reveal">SaaS marketplace</div>
         <h1 class="reveal" style="--d:60ms">{{ product.name }}</h1>
         <p class="lede reveal" style="--d:120ms">{{ product.tagline }}</p>
         <div class="stats reveal" style="--d:180ms">
           <div class="stat"><b>{{ "%.2f"|format(product.price) }}</b><span>price · {{ product.currency }}</span></div>
-          <div class="stat"><b>{{ product.plans | length }}</b><span>plans</span></div>
+          <div class="stat"><b>{{ product.plans | length }}</b><span>apps for sale</span></div>
         </div>
       </div>
       <div class="orb reveal" style="--d:140ms" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -315,11 +315,11 @@
     <div class="panel">
       <div class="label">About</div>
       <p>{{ product.description }}</p>
-      <p>From <strong>{{ "%.2f"|format(product.price) }} {{ product.currency }}</strong></p>
+      <p>Projects from <strong>{{ "%.2f"|format(product.price) }} {{ product.currency }}</strong></p>
     </div>
 
     <div class="panel">
-      <div class="label">What is included</div>
+      <div class="label">Marketplace benefits</div>
       <ul class="features">
         {% for f in product.features %}<li>{{ f }}</li>{% endfor %}
       </ul>
@@ -327,14 +327,14 @@
 
     {% if product.use_cases or product.differentiators %}
     <div class="panel">
-      <div class="label">Use cases and differentiators</div>
+      <div class="label">Business use cases</div>
       <ul class="features">{% for item in product.use_cases|default([], true) %}<li>{{ item }}</li>{% endfor %}
       {% for item in product.differentiators|default([], true) %}<li>{{ item }}</li>{% endfor %}</ul>
     </div>
     {% endif %}
 
     <div class="panel">
-      <div class="label">Plans</div>
+      <div class="label">Ready-made apps</div>
       <div class="plans">
         {% for plan in product.plans %}
         <div class="plan">
@@ -346,7 +346,7 @@
     </div>
 
     <div class="panel">
-      <div class="label">Policies</div>
+      <div class="label">Marketplace policies</div>
       <dl class="policies">
         {% for key, value in product.policies.items() %}
         <dt>{{ key }}</dt><dd>{{ value }}</dd>
@@ -368,7 +368,7 @@
     {% endif %}
 
     {% if product_slug and (product.support_channels or product.sla) %}
-    <div class="panel"><div class="label">Support</div>
+    <div class="panel"><div class="label">Engineer support</div>
       <p>{{ product.support_channels|join(', ') }}</p><p>{{ product.sla }}</p>
     </div>
     {% endif %}
@@ -400,7 +400,7 @@
 <footer>
   <div class="wrap">
     <span>Prototype with simulated payments. No real money is charged.</span>
-    <span>SoukSaaS / product page</span>
+    <span>SoukSaaS / marketplace</span>
   </div>
 </footer>
 

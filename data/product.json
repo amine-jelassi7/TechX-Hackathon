@@ -1,29 +1,29 @@
 {
-  "id": "prod_ai_bootcamp",
-  "name": "AI Foundations Bootcamp",
-  "tagline": "Learn to build with AI in 4 weeks",
-  "description": "A 4-week live bootcamp that takes students and junior developers from AI basics to a working project: prompting, APIs, simple agents and deployment.",
-  "audience": ["students", "junior developers"],
+  "id": "prod_saas_marketplace",
+  "name": "SaaS Hub: Ready-Made Projects",
+  "tagline": "Instant SaaS applications for your restaurant or cafe, built by expert Software Engineers.",
+  "description": "A marketplace platform where business owners can purchase and deploy ready-to-use software (like digital menus, POS, and reservation systems) directly from the engineers who built them.",
+  "audience": ["restaurant owners", "cafe managers", "small business owners"],
   "price": 250.0,
   "currency": "TND",
   "plans": [
-    {"id": "std", "name": "Standard", "price": 250.0},
-    {"id": "pro", "name": "Pro (mentoring)", "price": 450.0}
+    {"id": "std", "name": "Restaurant App Suite (by SE John)", "price": 250.0},
+    {"id": "pro", "name": "Cafe Loyalty App (by SE Sarah)", "price": 450.0}
   ],
-  "features": ["16 live sessions", "Hands-on projects", "Certificate of completion", "Recordings for 3 months"],
+  "features": ["Direct engineer support", "Instant deployment", "Customizable dashboard"],
   "faq_seed": [
-    "Is there a refund policy?",
-    "Do I need prior experience?",
-    "When do the sessions take place?",
-    "Do I get a certificate?",
-    "What is the difference between Standard and Pro?"
+    "Do I own the software?",
+    "How do I contact the engineer who built this?",
+    "Can the app be customized for my cafe?",
+    "Will this integrate with my current POS?",
+    "Is this a monthly fee or a one-time project purchase?"
   ],
   "policies": {
-    "refund": "Refund within 7 days if fewer than 2 sessions attended.",
-    "schedule": "Sessions run Monday to Thursday, 18:00-20:00 Tunisia time, for 4 weeks.",
-    "prerequisites": "Basic Python knowledge is helpful; no prior AI experience is required.",
-    "certificate": "A certificate of completion is issued to students who attend at least 12 of 16 sessions."
+    "refund": "Marketplace purchases are simulated in this prototype. Review the listing terms and contact the engineer about refund or support terms before purchase.",
+    "schedule": "Apps are ready to deploy; delivery timing and any setup work are agreed with the listed engineer.",
+    "prerequisites": "No technical experience is required to browse or purchase. Confirm your business requirements and integrations with the engineer.",
+    "certificate": "No course certificate applies. Ownership, licensing, and usage rights are specified in each project listing."
   },
-  "contact": "contact@example.test",
+  "contact": "marketplace@example.test",
   "tone": "friendly, concise, professional"
 }
