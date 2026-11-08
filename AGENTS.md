@@ -4,6 +4,7 @@ Instructions for any coding agent (Claude Code, OpenCode, Codex) working on this
 Keep token use low: read `PROGRESS.md` first, then only the spec sections your task needs.
 
 ## Where things are
+- `docs/HANDOFF.md`: what was built, how to continue with OpenCode, feature ideas, how to win. Read once.
 - `PROGRESS.md`: current state, step table, next actions, known issues. Start here.
 - `IMPLEMENTATION_SPEC.md`: full spec (section 12 = build phases, section 0 = rules).
 - `docs/API_CONTRACT.md`: LLM client, owner/public HTTP API, eval-results JSON. Code must match it.

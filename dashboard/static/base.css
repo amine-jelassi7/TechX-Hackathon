@@ -6,7 +6,7 @@
 }
 
 /* chrome we do not want */
-#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDeployButton"],
+#MainMenu, footer, [data-testid="stToolbarActions"], [data-testid="stMainMenu"], [data-testid="stAppDeployButton"], [data-testid="stDeployButton"],
 [data-testid="stDecoration"], [data-testid="stStatusWidget"] { display: none !important; visibility: hidden; }
 header[data-testid="stHeader"] { background: transparent; height: 2.2rem; }
 
@@ -114,3 +114,8 @@ label:has(input[role="switch"]) > div:first-of-type > div { background: #FFFFFF;
 [data-testid="stExpander"] * { border-color: var(--line); }
 [data-testid="stTextInput"] input, [data-testid="stTextArea"] textarea { border-color: var(--line) !important; }
 [role="listbox"] { border: 1px solid var(--line-hi) !important; }
+
+/* Keep the sidebar re-open control visible when the sidebar is collapsed (it lives in stToolbar). */
+[data-testid="stToolbar"] { background: transparent; }
+[data-testid="stExpandSidebarButton"] { visibility: visible !important; display: flex !important; }
+[data-testid="stExpandSidebarButton"] button { color: var(--text) !important; border: 1px solid var(--line, rgba(127,127,127,.35)); border-radius: 2px; }

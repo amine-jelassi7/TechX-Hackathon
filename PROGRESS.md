@@ -1,41 +1,17 @@
 # PROGRESS / HANDOFF
 
-> **RESUME HERE (2026-11-08):** read section 0 below first.
+> **RESUME HERE:** new to the project? Read `docs/HANDOFF.md` first, then section 0 below.
 
 Single source of truth for where the project stands. Updated after every step.
 Anyone continuing (Claude Code, OpenCode, a human): read `AGENTS.md`, then this file, then only the
 spec sections you need. Last updated: 2026-11-08 (step W done).
 
-## 0. Resume here: review fixes in progress (branch `wip/review-fixes`)
-
-A final code review (Opus) found 12 defects. A worker started fixing them and stopped mid-way (token limit).
-Its partial work is on branch `wip/review-fixes` (draft PR). State when it stopped: `uv run pytest -q` -> 390 passed.
-Open PRs to merge first if still open: #17 (pitch guide), #18 (dashboard motion + light/dark).
-
-Status per finding (verify each by reading the code + running its test; "likely done" = code present, not re-verified):
-
-| # | Sev | Finding | Where | Status |
-|---|---|---|---|---|
-| 1 | HIGH | Retried payment charges 2-3 times when the payment agent is slower than the orchestrator timeout; timed-out threads share the request DB session | `app/orchestrator.py`, `app/agents/payment.py` | **NOT DONE / partial** (worker stopped at "base agent and orchestrator"). Fix: never retry non-idempotent message types (payment_request, insights runs); idempotency key (AgentMessage id / trace_id stored on Payment, checked before insert); own Session per attempt. Add regression test: slow payment agent -> exactly 1 Payment row |
-| 2 | HIGH | Card number stored raw in `Payment.test_token` | `app/schemas.py`, `payment.py` | likely done (`test_token` pattern `^tok_[a-z0-9_]{1,32}$`) |
-| 3 | MED | Card number stored raw in `Interaction.session_id` | `app/schemas.py` | likely done (`session_id` pattern) |
-| 4 | MED | User can close the `<untrusted>` delimiter in chat | `sales.py`, `gateway/filters.py` | likely done (tag stripped + injection pattern) |
-| 5 | MED | Conversion = paid/interested counted payers who never showed interest (demo showed 88%) | `services/analytics.py`, `scripts/seed.py` | analytics likely done (`converted = paid & interested`); CHECK seed: payers mostly from interested prospects, ApprovalRequest rows for seeded held payments, no seeded `approved` status |
-| 6 | MED | Live mode: LLM 20 s x 2 attempts vs 10 s orchestrator timeout -> timeouts + duplicate runs | `app/llm.py`, `app/config.py` | **NOT VERIFIED**. Fix: agent timeout ~45 s, LLM timeout ~15 s, 1 retry |
-| 7 | MED | Owner API accepts default token `change-me` | `app/config.py`, `routers/owner.py` | **partial** (config only). Fix: if token empty/`change-me` and APP_ENV != dev -> owner API 401 + startup warning; dev keeps working with a warning |
-| 8 | LOW | Approve/reject race: two concurrent approves both charge | `payment.py` approve/reject | **NOT DONE**. Fix: atomic `UPDATE ... WHERE id=? AND status='pending'`, check rowcount, 409 otherwise |
-| 9 | LOW | Classifier `extra="forbid"` breaks on extra keys in live mode; missing API key only reported after retries | `gateway/classifier.py`, `app/llm.py` | classifier likely done; CHECK fail-fast on missing key (no retries on auth errors, never log key) |
-| 10 | LOW | `LLMError` from `qa.generate_qa` -> 500 | `routers/owner.py` | likely done (503) |
-| 11 | LOW | LLM-written outreach `reason` not passed through `gateway.check_output` | `services/insights.py` | CHECK |
-| 12 | LOW | No audit events for qa reject/update and payment-hold failure path | `routers/owner.py`, `payment.py` | qa events likely done; CHECK payment-hold failure path |
-
-After fixing: run `uv run pytest -q`, `uv run ruff check .`, `uv run python tasks.py demo` (must end "audit chain ok", believable conversion),
-`uv run python tasks.py eval` (attacks must stay 15/15, refusal 100%). Then update this table, `docs/DECISIONS.md`
-(no retry for non-idempotent handlers, token policy) and open the PR against main.
-
-Last step after that: run the platform and check it: `uv run python tasks.py seed`, then `uv run python tasks.py run`
-(product page http://127.0.0.1:8000) and `uv run python tasks.py dashboard` (http://localhost:8501), click the
-Simulator page "Run demo scenario", check Overview, Live feed, Approvals, Security in both themes.
+## 0. Resume here
+All 12 code-review findings are fixed with regression tests (PR #19): `uv run pytest -q` -> 390 passed,
+eval attacks 15/15, Q&A refusal 100%, demo ends with conversion 58.8% and audit chain ok.
+Remaining known caveats are in section 7. Next: live-mode smoke test with a real `LLM_API_KEY` in `.env`
+(one fallback question + one insights run), then run the platform (commands in section 2) and check
+Overview, Live feed, Approvals and Security in both themes after clicking Simulator "Run demo scenario".
 
 ## 1. What we are building
 SoukSaaS: a prototype "Autonomous FinTech Team" for the TechX ENIT x ENICarthage 14h hackathon

@@ -26,6 +26,7 @@ uv sync
 copy .env.example .env     # Windows; use cp on macOS/Linux
 ```
 
+Set `OWNER_TOKEN` in `.env` before showing the project to anyone: with the default `change-me` the owner API only works while `APP_ENV=dev` (anything else returns 401 and the app logs an error at startup).
 Keep `LLM_MODE=mock` for a fully offline run, or set `LLM_MODE=live` and `LLM_API_KEY` for a live model.
 Never commit `.env`.
 

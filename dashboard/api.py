@@ -33,7 +33,7 @@ def request(
     json: Any = None,
     transport: httpx.BaseTransport | None = None,
 ) -> Any:
-    headers = {"X-Owner-Token": os.getenv("OWNER_TOKEN", "")}
+    headers = {"X-Owner-Token": os.getenv("OWNER_TOKEN", "change-me")}
     try:
         with httpx.Client(
             base_url=base_url(), timeout=TIMEOUT, headers=headers, transport=transport
