@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.myyp_cache/
+build/
+dist/
+
+# Environments and secrets
+.venv/
+venv/
+.env
+.streamlit/secrets.toml
+
+# Local data and artifacts
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
