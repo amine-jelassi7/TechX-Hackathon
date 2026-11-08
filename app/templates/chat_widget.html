@@ -1,24 +1,24 @@
 <style>
-  #sx-chat { position:fixed; right:12px; bottom:12px; width:360px; max-width:calc(100vw - 24px); background:#fff; border:1px solid #dde3ea; border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,.18); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:14px; color:#1b2430; z-index:1000; }
-  #sx-head { background:#0f766e; color:#fff; padding:10px 12px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  #sx-chat { position:fixed; right:12px; bottom:12px; width:360px; max-width:calc(100vw - 24px); background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 6px 24px rgba(0,0,0,.4); font-family:var(--sans); font-size:14px; color:var(--text); z-index:1000; }
+  #sx-head { background:var(--signal); color:var(--on-signal); padding:10px 12px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
   #sx-body { display:none; padding:10px; }
   #sx-chat.open #sx-body { display:block; }
-  #sx-log { height:220px; overflow-y:auto; border:1px solid #eef1f4; border-radius:8px; padding:8px; background:#fafbfc; }
+  #sx-log { height:220px; overflow-y:auto; border:1px solid var(--line); border-radius:8px; padding:8px; background:var(--panel-hi); }
   .sx-msg { margin:0 0 8px; padding:6px 10px; border-radius:10px; max-width:88%; white-space:pre-wrap; word-wrap:break-word; }
-  .sx-user { background:#d9f2ee; margin-left:auto; }
-  .sx-bot { background:#eef1f4; }
+  .sx-user { background: rgba(var(--signal-rgb), .16); margin-left:auto; }
+  .sx-bot { background: var(--panel-hi); }
   #sx-row { display:flex; gap:6px; margin-top:8px; }
-  #sx-input { flex:1; min-width:0; padding:8px; border:1px solid #c9d1da; border-radius:8px; font-size:14px; }
-  #sx-chat button { padding:8px 10px; border:0; border-radius:8px; background:#0f766e; color:#fff; font-size:13px; cursor:pointer; }
-  #sx-chat button.alt { background:#e6ebf0; color:#1b2430; }
+  #sx-input { flex:1; min-width:0; padding:8px; background:var(--void); border:1px solid var(--line-hi); border-radius:8px; font-size:14px; color:var(--text); font-family:var(--sans); }
+  #sx-chat button { padding:8px 10px; border:0; border-radius:8px; background:var(--signal); color:var(--on-signal); font-size:13px; cursor:pointer; }
+  #sx-chat button.alt { background:var(--panel-hi); color:var(--text); border:1px solid var(--line-hi); }
   #sx-chat button:disabled { opacity:.5; cursor:default; }
-  .sx-sec { margin-top:10px; padding-top:8px; border-top:1px solid #eef1f4; }
-  .sx-sec label { display:block; font-weight:600; margin-bottom:4px; }
+  .sx-sec { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
+  .sx-sec label { display:block; font-weight:600; color:var(--text); margin-bottom:4px; }
   .sx-btns { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
-  #sx-plan { width:100%; padding:7px; border:1px solid #c9d1da; border-radius:8px; }
-  #sx-payres { margin-top:6px; font-size:13px; }
-  #sx-stars button { background:#e6ebf0; color:#1b2430; padding:6px 10px; margin-right:4px; }
-  #sx-rateres { margin-left:4px; font-size:13px; }
+  #sx-plan { width:100%; padding:7px; background:var(--panel-hi); color:var(--text); border:1px solid var(--line-hi); border-radius:8px; font-family:var(--sans); }
+  #sx-payres { margin-top:6px; font-size:13px; color:var(--dim); }
+  #sx-stars button { background:var(--panel-hi); color:var(--text); padding:6px 10px; margin-right:4px; }
+  #sx-rateres { margin-left:4px; font-size:13px; color:var(--dim); }
 </style>
 
 <div id="sx-chat">

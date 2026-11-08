@@ -1,98 +1,396 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ product.name }}</title>
 <style>
-  :root { --ink:#1b2430; --muted:#5b6675; --brand:#0f766e; --bg:#f6f8fa; --card:#fff; --line:#dde3ea; }
-  * { box-sizing: border-box; }
-  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color:var(--ink); background:var(--bg); line-height:1.5; }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
-  .hero { background: var(--brand); color:#fff; padding: 40px 0; }
-  .hero h1 { margin:0 0 8px; font-size: 2rem; }
-  .hero p.tag { margin:0 0 12px; font-size: 1.15rem; opacity:.95; }
-  .hero .aud { font-size:.9rem; opacity:.85; }
-  section { margin: 28px 0; }
-  h2 { font-size:1.3rem; margin: 0 0 12px; }
-  ul.features { padding-left: 20px; margin:0; }
-  .plans { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
-  .plan { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
-  .plan .name { font-weight:600; }
-  .plan .price { font-size:1.5rem; color:var(--brand); font-weight:700; }
-  dl.policies { margin:0; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; }
-  dl.policies dt { font-weight:600; text-transform:capitalize; }
-  dl.policies dd { margin:0 0 10px; color:var(--muted); }
-  .fitcall { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
-    margin-top:-22px; padding:16px 18px; background:var(--card); border:1px solid var(--line);
-    border-radius:10px; box-shadow:0 4px 18px rgba(15,23,42,.06); }
-  .fitcall b { display:block; font-size:1rem; }
-  .fitcall span { color:var(--muted); font-size:.88rem; }
-  .fitcall a { flex:none; padding:9px 14px; border-radius:8px; background:var(--brand); color:#fff;
-    font-weight:600; font-size:.9rem; text-decoration:none; }
-  .fitcall a:hover { filter:brightness(1.08); }
-  footer { color:var(--muted); font-size:.9rem; padding: 8px 0 120px; }
+  @import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+  :root {
+    --sans: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --void: #06080B;
+    --panel: #0B0F14;
+    --panel-hi: #111820;
+    --line: #1B242E;
+    --line-hi: #2A3744;
+    --text: #DCE3EA;
+    --dim: #7F8E9D;
+    --faint: #4B5866;
+    --signal: #46B4FF;
+    --signal-rgb: 70,180,255;
+    --alarm: #FF5A36;
+    --alarm-rgb: 255,90,54;
+    --on-signal: #06080B;
+    --radius: 2px;
+  }
+
+  :root[data-theme="light"] {
+    --void: #F3F5F8;
+    --panel: #FFFFFF;
+    --panel-hi: #E9EEF3;
+    --line: #D8DFE6;
+    --line-hi: #B7C3CF;
+    --text: #0E1822;
+    --dim: #4A5968;
+    --faint: #6F7E8C;
+    --signal: #0B6BB8;
+    --signal-rgb: 11,107,184;
+    --alarm: #FF5A36;
+    --alarm-rgb: 255,90,54;
+    --on-signal: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--void);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: .18;
+    -webkit-mask-image: radial-gradient(circle at 50% 10%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(circle at 50% 10%, #000 0%, transparent 72%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(600px 340px at 78% 4%, rgba(var(--signal-rgb), .10), transparent 70%),
+      radial-gradient(500px 300px at 12% 20%, rgba(var(--signal-rgb), .05), transparent 70%);
+  }
+  a { color: var(--signal); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  button { font: inherit; }
+  .wrap { position: relative; z-index: 1; width: min(1120px, calc(100% - 2.5rem)); margin-inline: auto; }
+  .mono { font-family: var(--mono); }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--void);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 58px;
+  }
+  .brand {
+    color: var(--text);
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+  }
+  .brand:hover { text-decoration: none; }
+  .brand span { color: var(--signal); }
+  .meta { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; justify-content: flex-end; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    font: 500 .68rem var(--mono);
+    padding: .2rem .6rem;
+    border: 1px solid var(--line-hi);
+    border-radius: 999px;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .pill.ok { color: var(--signal); border-color: rgba(var(--signal-rgb), .45); }
+  .icon-btn {
+    background: transparent;
+    color: var(--dim);
+    border: 1px solid var(--line-hi);
+    border-radius: var(--radius);
+    padding: .38rem .7rem;
+    font: 500 .7rem var(--mono);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--signal); }
+
+  .hero { padding: clamp(2.4rem, 6vw, 4.8rem) 0 clamp(1.8rem, 4vw, 3rem); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); gap: 2rem; align-items: center; }
+  .eyebrow { font: 500 .7rem var(--mono); letter-spacing: .24em; text-transform: uppercase; color: var(--dim); }
+  h1 {
+    margin: .95rem 0 1rem;
+    font-size: clamp(2.5rem, 6.2vw, 4.6rem);
+    line-height: .98;
+    letter-spacing: -.04em;
+    font-weight: 600;
+    max-width: 15ch;
+  }
+  h1 em { font-style: normal; color: var(--signal); }
+  .lede { margin: 0; max-width: 58ch; color: var(--dim); font-size: clamp(.95rem, 1.4vw, 1.08rem); }
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-top: 1.8rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat { padding: .8rem 1.4rem .8rem 0; margin-right: 1.4rem; border-right: 1px solid var(--line); }
+  .stat:last-child { border-right: 0; margin-right: 0; }
+  .stat b { display: block; font: 500 1.15rem var(--mono); letter-spacing: -.02em; }
+  .stat span { display: block; font: 400 .68rem var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .1em; margin-top: .15rem; }
+
+  .orb { position: relative; width: min(280px, 100%); aspect-ratio: 1; margin-inline: auto; }
+  .orb i {
+    position: absolute;
+    border: 1px solid var(--line-hi);
+    border-radius: 50%;
+    inset: 0;
+    animation: spin 26s linear infinite;
+  }
+  .orb i::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 12px rgba(var(--signal-rgb), .8);
+  }
+  .orb i:nth-child(2) { inset: 15%; animation-duration: 19s; animation-direction: reverse; }
+  .orb i:nth-child(3) { inset: 31%; animation-duration: 13s; }
+  .orb i:nth-child(4) { inset: 44%; border-color: var(--signal); opacity: .55; animation-duration: 9s; animation-direction: reverse; }
+  .orb::after {
+    content: "";
+    position: absolute;
+    inset: 48%;
+    border-radius: 50%;
+    background: var(--signal);
+    box-shadow: 0 0 40px 8px rgba(var(--signal-rgb), .35);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .panel {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1.1rem, 2.4vw, 1.6rem);
+    margin-bottom: 2.4rem;
+  }
+  .panel::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    width: 30px;
+    height: 2px;
+    background: var(--signal);
+  }
+  .label { font: 500 .66rem var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dim); margin-bottom: .55rem; }
+
+  .fitcall {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .fitcall b { display: block; font-size: 1rem; }
+  .fitcall span { color: var(--dim); font-size: .88rem; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .55rem 1.05rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-hi);
+    background: transparent;
+    color: var(--text);
+    font: 500 .78rem var(--mono);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+    text-decoration: none;
+  }
+  .btn:hover { border-color: var(--signal); color: var(--signal); text-decoration: none; }
+  .btn.primary { background: var(--signal); border-color: var(--signal); color: var(--on-signal); }
+  .btn.primary:hover { color: var(--on-signal); background: var(--signal); filter: brightness(1.08); }
+
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .55rem; }
+  .plan { border: 1px solid var(--line); background: var(--panel-hi); padding: .7rem .8rem; }
+  .plan b { display: block; font: 500 1.05rem var(--mono); letter-spacing: -.02em; }
+  .plan span { display: block; color: var(--dim); font-size: .76rem; margin-top: .15rem; }
+
+  .features { list-style: none; padding: 0; margin: 0; display: grid; gap: .35rem; }
+  .features li { color: var(--dim); font-size: .84rem; }
+  .features li::before { content: "+"; font-family: var(--mono); color: var(--signal); margin-right: .5rem; }
+
+  dl.policies { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+  dl.policies dt { font: 500 .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin-top: .8rem; }
+  dl.policies dd { margin: 0 0 .8rem; color: var(--dim); }
+  dl.policies dd:last-child { margin-bottom: 0; }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--line);
+    padding: 1.2rem 0 2.6rem;
+  }
+  footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; color: var(--faint); font: 400 .72rem var(--mono); }
+
+  .reveal { opacity: 0; transform: translateY(8px); animation: rise .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: var(--d, 0ms); }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .orb { display: none; }
+  }
+  @media (max-width: 620px) {
+    .wrap { width: calc(100% - 1.6rem); }
+  }
 </style>
 </head>
 <body>
-<header class="hero">
+
+<header class="topbar">
   <div class="wrap">
-    <h1>{{ product.name }}</h1>
-    <p class="tag">{{ product.tagline }}</p>
-    <div class="aud">For: {{ product.audience | join(", ") }}</div>
+    <a class="brand" href="/">Souk<span>SaaS</span></a>
+    <div class="meta">
+      <span class="pill ok">deterministic scoring</span>
+      <a class="pill" href="/discover" style="text-decoration:none">find your fit</a>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme">Light</button>
+    </div>
   </div>
 </header>
 
-<main class="wrap">
-  <div class="fitcall">
-    <div>
-      <b>Not sure this is the right fit?</b>
-      <span>Answer six quick questions and get a product recommendation.</span>
-    </div>
-    <a href="/discover">Find your fit</a>
-  </div>
-
-  <section>
-    <h2>About</h2>
-    <p>{{ product.description }}</p>
-    <p>From <strong>{{ "%.2f"|format(product.price) }} {{ product.currency }}</strong></p>
-  </section>
-
-  <section>
-    <h2>What is included</h2>
-    <ul class="features">
-      {% for f in product.features %}<li>{{ f }}</li>{% endfor %}
-    </ul>
-  </section>
-
-  <section>
-    <h2>Plans</h2>
-    <div class="plans">
-      {% for plan in product.plans %}
-      <div class="plan">
-        <div class="name">{{ plan.name }}</div>
-        <div class="price">{{ "%.2f"|format(plan.price) }} {{ product.currency }}</div>
+<main>
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow reveal">Product brief</div>
+        <h1 class="reveal" style="--d:60ms">{{ product.name }}</h1>
+        <p class="lede reveal" style="--d:120ms">{{ product.tagline }}</p>
+        <div class="stats reveal" style="--d:180ms">
+          <div class="stat"><b>{{ "%.2f"|format(product.price) }}</b><span>price · {{ product.currency }}</span></div>
+          <div class="stat"><b>{{ product.plans | length }}</b><span>plans</span></div>
+        </div>
       </div>
-      {% endfor %}
+      <div class="orb reveal" style="--d:140ms" aria-hidden="true"><i></i><i></i><i></i></div>
     </div>
   </section>
 
-  <section>
-    <h2>Policies</h2>
-    <dl class="policies">
-      {% for key, value in product.policies.items() %}
-      <dt>{{ key }}</dt><dd>{{ value }}</dd>
-      {% endfor %}
-    </dl>
-  </section>
+  <section class="wrap">
+    <div class="panel fitcall">
+      <div>
+        <b>Not sure this is the right fit?</b>
+        <span>Answer six quick questions and get a product recommendation.</span>
+      </div>
+      <a class="btn primary" href="/discover">Find your fit</a>
+    </div>
 
-  <section>
-    <h2>Contact</h2>
-    <p>{{ product.contact }}</p>
+    <div class="panel">
+      <div class="label">About</div>
+      <p>{{ product.description }}</p>
+      <p>From <strong>{{ "%.2f"|format(product.price) }} {{ product.currency }}</strong></p>
+    </div>
+
+    <div class="panel">
+      <div class="label">What is included</div>
+      <ul class="features">
+        {% for f in product.features %}<li>{{ f }}</li>{% endfor %}
+      </ul>
+    </div>
+
+    <div class="panel">
+      <div class="label">Plans</div>
+      <div class="plans">
+        {% for plan in product.plans %}
+        <div class="plan">
+          <b>{{ "%.2f"|format(plan.price) }} {{ product.currency }}</b>
+          <span>{{ plan.name }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="label">Policies</div>
+      <dl class="policies">
+        {% for key, value in product.policies.items() %}
+        <dt>{{ key }}</dt><dd>{{ value }}</dd>
+        {% endfor %}
+      </dl>
+    </div>
+
+    <div class="panel">
+      <div class="label">Contact</div>
+      <p>{{ product.contact }}</p>
+    </div>
   </section>
 </main>
 
-<footer class="wrap">Prototype with simulated payments. No real money is charged.</footer>
+<footer>
+  <div class="wrap">
+    <span>Prototype with simulated payments. No real money is charged.</span>
+    <span>SoukSaaS / product page</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  function themeInit() {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeBtn");
+    function apply(mode) {
+      root.setAttribute("data-theme", mode);
+      btn.textContent = mode === "light" ? "Dark" : "Light";
+      try { localStorage.setItem("souk-theme", mode); } catch (e) {}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem("souk-theme"); } catch (e) {}
+    if (!saved) {
+      try { saved = new URLSearchParams(window.location.search).get("theme"); } catch (e) {}
+    }
+    apply(saved === "light" ? "light" : "dark");
+    btn.addEventListener("click", function () {
+      apply(root.getAttribute("data-theme") === "light" ? "dark" : "light");
+    });
+  }
+
+  themeInit();
+})();
+</script>
 
 {% include "chat_widget.html" %}
 </body>
